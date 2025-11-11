@@ -6,7 +6,7 @@ export default function Page() {
     <div>
       
 
-      <h1 className='text-5xl text-white'>Homepage</h1>
+      <h1 className='text-5xl text-yellow-500'>Homepage</h1>
       
 
     </div>
