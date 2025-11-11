@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../sections/navbar";
+import Navbar from "../components/shared/navbar";
 
 
 export default function Layout({

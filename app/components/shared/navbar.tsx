@@ -1,6 +1,9 @@
 "use client"
 import { useState } from "react"
 import { Menu, X } from "lucide-react"
+import { SignInButton , useUser , UserButton } from "@clerk/nextjs"
+import Link from "next/link"
+import Image from "next/image"
 
 // TypeScript interface for nav items
 interface NavLink {
@@ -18,6 +21,7 @@ const navLinks: NavLink[] = [
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { isSignedIn } = useUser();
 
   // Toggle mobile menu
   const toggleMenu = () => {
@@ -26,18 +30,27 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-md">
-      <div className="mx-auto max-w-full py-3 px-4 sm:px-4 lg:px-2">
+      <div className="mx-auto max-w-full py-3 px-4 sm:px-4 lg:px-6">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */} 
-          <a href="/" className="flex justify-center items-center">
-            <img width={90}  src="/images/Noctra.png" alt="Logo" />
+          <div  className="flex justify-center items-center">
+            <Link  href = "/">
+
+            <Image
+              src="/images/texture.png"
+              alt="Noctra Logo"
+              width={80}
+              height={80}
+              className=""
+            />
+            </Link>
             <div
               
-              className="text-4xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
+              className="text-4xl font-extrabold text-black bg-clip-text  hover:scale-105 transition-transform duration-300"
             >
               Noctra
             </div>
-          </a>
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
@@ -55,9 +68,12 @@ export default function Navbar() {
             </ul>
 
             {/* CTA Button */}
-            <button className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 transform hover:scale-105">
-              Get Started
-            </button>
+            {isSignedIn? (<UserButton afterSignOutUrl="/" />) : (
+              <div className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 transform hover:scale-105">
+                <SignInButton/>
+              </div>
+            )}
+
           </div>
 
           {/* Mobile Menu Button */}
