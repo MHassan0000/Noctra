@@ -1,15 +1,15 @@
-import Navbar from "../sections/navbar"
+import React from "react";
+import Navbar from "../sections/navbar";
 
 
 export default function Layout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <main>
-        <Navbar/>
-        {children}
-    </main>
-  );
+    children }: { children: React.ReactNode }) {
+    return (
+        <main className="">
+
+            <Navbar />
+            {children}
+
+        </main>
+    );
 }
