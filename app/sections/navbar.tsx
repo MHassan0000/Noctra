@@ -26,17 +26,18 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-md">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-full py-3 px-4 sm:px-4 lg:px-2">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <a
-              href="#"
-              className="text-2xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
+          {/* Logo */} 
+          <a href="/" className="flex justify-center items-center">
+            <img width={90}  src="/images/Noctra.png" alt="Logo" />
+            <div
+              
+              className="text-4xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
             >
               Noctra
-            </a>
-          </div>
+            </div>
+          </a>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
