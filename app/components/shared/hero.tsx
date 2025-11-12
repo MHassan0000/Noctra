@@ -37,7 +37,7 @@ export default function Hero() {
         <div className="space-y-3">
           <h1 className="text-5xl font-bold leading-tight">
             Bring Your Images to Life with{" "}
-            <span className="bg-gradient-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent">
               Noctra AI
             </span>
           </h1>
@@ -50,7 +50,7 @@ export default function Hero() {
 
         {/* CTA */}
         <div className="flex flex-wrap gap-4">
-          <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-6 rounded-full text-lg shadow-lg hover:shadow-xl transition-all">
+          <Button className="bg-linear-to-r from-purple-600 to-indigo-600 text-white px-8 py-6 rounded-full text-lg shadow-lg hover:shadow-xl transition-all">
             Get Started
           </Button>
           <Button
