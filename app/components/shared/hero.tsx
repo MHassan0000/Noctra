@@ -23,6 +23,11 @@ export default function Hero() {
       icon: Palette,
       desc: "Change colors seamlessly with AI-driven accuracy.",
     },
+    {
+      title: "Background Remove",
+      icon: Eraser,
+      desc: "Remove backgrounds effortlessly with AI.",
+    },
   ];
 
   return (

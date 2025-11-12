@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from "react"
 import Link from "next/link"
+import { navigationLinks } from "../../../constants/index"
 import Image from "next/image"
 import { Home, Layers, DollarSign, BookOpen, Image as ImageIcon, Sparkles, Scissors,Eraser, Repeat, Menu, X } from "lucide-react"
 import { useUser, UserButton, SignInButton } from "@clerk/nextjs"
@@ -56,26 +57,22 @@ export default function Sidebar() {
             <hr className="my-4" />
 
             <div className="flex flex-col gap-3">
-              <Link href="/tools/restore" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-indigo-50">
-                <ImageIcon className="w-5 h-5 text-purple-600" />
-                <span className="text-sm">Restore</span>
-              </Link>
-              <Link href="/tools/fill" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-purple-50">
-                <Sparkles className="w-5 h-5 text-purple-600" />
-                <span className="text-sm">Fill</span>
-              </Link>
-              <Link href="/tools/remove" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-purple-50">
-                <Scissors className="w-5 h-5 text-purple-600" />
-                <span className="text-sm">Remove</span>
-              </Link>
-              <Link href="/tools/recolor" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-purple-50">
-                <Repeat className="w-5 h-5 text-purple-600" />
-                <span className="text-sm">Recolor</span>
-              </Link>
-              <Link href="/tools/recolor" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-purple-50">
-                <Eraser className="w-5 h-5 text-purple-600" />
-                <span className="text-sm">Remove Background</span>
-              </Link>
+              {navigationLinks.map((t) => {
+                // choose icon by label
+                const key = t.label.toLowerCase()
+                let IconComp: any = ImageIcon
+                if (key.includes("fill")) IconComp = Sparkles
+                else if (key.includes("remove background") || key.includes("background")) IconComp = Eraser
+                else if (key.includes("remove") || key.includes("object remove")) IconComp = Scissors
+                else if (key.includes("recolor")) IconComp = Repeat
+
+                return (
+                  <Link key={t.route} href={t.route} onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-purple-50">
+                    <IconComp className="w-5 h-5 text-purple-600" />
+                    <span className="text-sm">{t.label}</span>
+                  </Link>
+                )
+              })}
             </div>
 
             <div className="mt-auto flex flex-col gap-3">
@@ -110,24 +107,20 @@ export default function Sidebar() {
         {/* Tool icons - desktop only visible when signed in */}
         {isSignedIn && (
           <div className="flex flex-col items-center gap-3 mt-3">
-            <Link href="/tools/restore" aria-label="Image Restore" className="group flex items-center justify-center w-9 h-9 rounded-full bg-indigo-50 hover:scale-105 transition">
-              <ImageIcon className="w-4 h-4 text-purple-600 group-hover:text-purple-700" />
-            </Link>
+            {navigationLinks.map((t) => {
+              const key = t.label.toLowerCase()
+              let IconComp: any = ImageIcon
+              if (key.includes("fill")) IconComp = Sparkles
+              else if (key.includes("remove background") || key.includes("background")) IconComp = Eraser
+              else if (key.includes("remove") || key.includes("object remove")) IconComp = Scissors
+              else if (key.includes("recolor")) IconComp = Repeat
 
-            <Link href="/tools/fill" aria-label="Generative Fill" className="group flex items-center justify-center w-9 h-9 rounded-full bg-purple-50 hover:scale-105 transition">
-              <Sparkles className="w-4 h-4 text-purple-600 group-hover:text-purple-700" />
-            </Link>
-
-            <Link href="/tools/remove" aria-label="Object Remove" className="group flex items-center justify-center w-9 h-9 rounded-full bg-purple-50 hover:scale-105 transition">
-              <Scissors className="w-4 h-4 text-purple-600 group-hover:text-purple-700" />
-            </Link>
-
-            <Link href="/tools/recolor" aria-label="Object Recolor" className="group flex items-center justify-center w-9 h-9 rounded-full bg-purple-50 hover:scale-105 transition">
-              <Repeat className="w-4 h-4 text-purple-600 group-hover:text-purple-700" />
-            </Link>
-            <Link href="/tools/remove" aria-label="Object Recolor" className="group flex items-center justify-center w-9 h-9 rounded-full bg-purple-50 hover:scale-105 transition">
-              <Eraser className="w-4 h-4 text-purple-600 group-hover:text-purple-700" />
-            </Link>
+              return (
+                <Link key={t.route} href={t.route} aria-label={t.label} className="group flex items-center justify-center w-9 h-9 rounded-full bg-purple-50 hover:scale-105 transition">
+                  <IconComp className="w-4 h-4 text-purple-600 group-hover:text-purple-700" />
+                </Link>
+              )
+            })}
           </div>
         )}
 
