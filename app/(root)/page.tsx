@@ -11,7 +11,7 @@ export default function HomePage() {
 
 
       <div className='flex justify-center items-center'>
-        <div className='m-1 rounded-full'>
+        <div className='rounded-full'>
           <Sidebar />
         </div>
         <div className='overflow-y-auto'>

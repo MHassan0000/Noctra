@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import Link from "next/link"
 import { navigationLinks } from "../../../constants/index"
 import Image from "next/image"
-import { Home, Layers, DollarSign, BookOpen, Image as ImageIcon, Sparkles, Scissors,Eraser, Repeat, Menu, X } from "lucide-react"
+import { Home, Layers, DollarSign, BookOpen, Image as ImageIcon, Sparkles, Scissors,Eraser, Repeat, Menu, X, Mail } from "lucide-react"
 import { useUser, UserButton, SignInButton } from "@clerk/nextjs"
 
 interface NavLink {
@@ -14,14 +14,14 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { label: "Home", href: "/", Icon: Home },
-  { label: "Pricing", href: "/pricing", Icon: DollarSign },
+  { label: "Contact", href: "/contact", Icon: Mail },
   { label: "Docs", href: "/docs", Icon: BookOpen },
   
   
 ]
 
 export default function Sidebar() {
-  const { isSignedIn } = useUser()
+  const { user , isSignedIn } = useUser()
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -77,8 +77,9 @@ export default function Sidebar() {
 
             <div className="mt-auto flex flex-col gap-3">
               {isSignedIn ? (
-                <div className="w-full flex items-center">
+                <div className="w-full flex items-center gap-2">
                   <UserButton appearance={{elements:{userButtonAvatarBox:{width:36,height:36}}}}/>
+                  <span className="text-sm font-medium">{user?.firstName + " " + user?.lastName}</span>
                 </div>
               ) : (
                 <div className="w-full inline-flex items-center gap-2 justify-center bg-linear-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-md text-sm font-semibold"><SignInButton/></div>
@@ -109,6 +110,7 @@ export default function Sidebar() {
           <div className="flex flex-col items-center gap-3 mt-3">
             {navigationLinks.map((t) => {
               const key = t.label.toLowerCase()
+              
               let IconComp: any = ImageIcon
               if (key.includes("fill")) IconComp = Sparkles
               else if (key.includes("remove background") || key.includes("background")) IconComp = Eraser
