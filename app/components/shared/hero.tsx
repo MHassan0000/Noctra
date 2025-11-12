@@ -32,16 +32,16 @@ export default function Hero() {
 
   return (
     <section className="flex flex-col justify-center px-8 py-20 w-screen h-full bg-white text-gray-900">
-      <div className="max-w-4xl mx-auto flex flex-col items-start gap-10">
+      <div className="max-w-5xl mx-auto flex flex-col items-start gap-10">
         {/* Headings */}
         <div className="space-y-3">
-          <h1 className="text-5xl font-semibold leading-tight">
+          <h1 className="text-5xl font-bold leading-tight">
             Bring Your Images to Life with{" "}
             <span className="bg-gradient-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent">
               Noctra AI
             </span>
           </h1>
-          <p className="text-gray-600 text-lg max-w-2xl">
+          <p className="text-gray-600 text-xl max-w-2xl">
             Edit, restore, and enhance your images effortlessly with powerful AI tools.
             Noctra helps you remove objects, recolor elements, and fill gaps like magic —
             all in one intuitive platform.
