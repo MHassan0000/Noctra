@@ -1,15 +1,11 @@
 import React from "react";
-import Navbar from "../components/shared/navbar";
+import Sidebar from "../components/shared/sidebar";
 
-
-export default function Layout({
-    children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
     return (
-        <main className="">
-
-            <Navbar />
-            {children}
-
-        </main>
+        <div>
+            <Sidebar />
+            <main>{children}</main>
+        </div>
     );
 }
