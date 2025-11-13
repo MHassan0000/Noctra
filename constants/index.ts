@@ -1,4 +1,4 @@
-import { Image, Eraser, Palette, Sparkles } from "lucide-react";
+import { Image, Eraser, Palette, Sparkles, Hourglass } from "lucide-react";
 
 export const navigationLinks = [
  
@@ -27,6 +27,7 @@ export const navigationLinks = [
     route: "/transformations/add/removeBackground",
     
   },
+ 
   
 ];
 
@@ -55,6 +56,11 @@ export const features = [
       title: "Background Remove",
       icon: Eraser,
       desc: "Remove backgrounds effortlessly with AI.",
+    },
+    {
+      title: "",
+      icon: Hourglass,
+      desc: "Coming Soon...",
     },
   ];
 
