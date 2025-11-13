@@ -1,3 +1,5 @@
+import { Image, Eraser, Palette, Sparkles } from "lucide-react";
+
 export const navigationLinks = [
  
   {
@@ -27,6 +29,35 @@ export const navigationLinks = [
   },
   
 ];
+
+export const features = [
+    {
+      title: "Image Restore",
+      icon: Image,
+      desc: "Revive damaged or low-quality images instantly.",
+    },
+    {
+      title: "Generative Fill",
+      icon: Sparkles,
+      desc: "Use AI to fill missing areas realistically.",
+    },
+    {
+      title: "Object Remove",
+      icon: Eraser,
+      desc: "Erase unwanted elements with precision.",
+    },
+    {
+      title: "Object Recolor",
+      icon: Palette,
+      desc: "Change colors seamlessly with AI-driven accuracy.",
+    },
+    {
+      title: "Background Remove",
+      icon: Eraser,
+      desc: "Remove backgrounds effortlessly with AI.",
+    },
+  ];
+
 
 export const plans = [
   {

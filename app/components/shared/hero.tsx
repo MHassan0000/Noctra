@@ -1,35 +1,8 @@
-import { Image, Eraser, Palette, Sparkles } from "lucide-react";
 import { Button } from "../../components/ui/button";
+import {features }from "../../../constants/index";
 
 export default function Hero() {
-  const features = [
-    {
-      title: "Image Restore",
-      icon: Image,
-      desc: "Revive damaged or low-quality images instantly.",
-    },
-    {
-      title: "Generative Fill",
-      icon: Sparkles,
-      desc: "Use AI to fill missing areas realistically.",
-    },
-    {
-      title: "Object Remove",
-      icon: Eraser,
-      desc: "Erase unwanted elements with precision.",
-    },
-    {
-      title: "Object Recolor",
-      icon: Palette,
-      desc: "Change colors seamlessly with AI-driven accuracy.",
-    },
-    {
-      title: "Background Remove",
-      icon: Eraser,
-      desc: "Remove backgrounds effortlessly with AI.",
-    },
-  ];
-
+ 
   return (
     <section className="flex flex-col justify-center px-8 py-20 w-screen h-full bg-white text-gray-900">
       <div className="max-w-5xl mx-auto flex flex-col items-start gap-10">

@@ -16,8 +16,6 @@ const navLinks: NavLink[] = [
   { label: "Home", href: "/", Icon: Home },
   { label: "Contact", href: "/contact", Icon: Mail },
   { label: "Docs", href: "/docs", Icon: BookOpen },
-  
-  
 ]
 
 export default function Sidebar() {
