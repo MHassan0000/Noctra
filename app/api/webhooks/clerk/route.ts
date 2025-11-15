@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { clerkClient } from "@clerk/nextjs/server";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -59,6 +60,7 @@ export async function POST(req: Request) {
 
         const email = email_addresses?.[0]?.email_address || "";
 
+        // FIX: Prevent undefined username
         const safeUsername =
             (username || "")
                 .trim()
@@ -75,19 +77,19 @@ export async function POST(req: Request) {
             photo: image_url || "",
         };
 
-        try {
-            console.log("Creating user with data:", JSON.stringify(user, null, 2));
-            const newUser = await createUser(user);
-            console.log("User created successfully:", JSON.stringify(newUser, null, 2));
-            return NextResponse.json({ message: "OK", user: newUser }, { status: 201 });
-        } catch (error: any) {
-            console.error("Error creating user:", error?.message || error);
-            console.error("Full error:", error);
-            return NextResponse.json(
-                { error: "Failed to create user", details: error?.message || String(error) },
-                { status: 500 }
-            );
+        const newUser = await createUser(user);
+
+        // Store DB user ID in Clerk metadata
+        if (newUser) {
+            const client = await clerkClient();
+            await client.users.updateUserMetadata(id, {
+                publicMetadata: {
+                    userId: String(newUser._id),
+                },
+            });
         }
+
+        return NextResponse.json({ message: "OK", user: newUser });
     }
 
     // ========== USER UPDATED ========== //
@@ -101,16 +103,9 @@ export async function POST(req: Request) {
             photo: image_url || "",
         };
 
-        try {
-            const updatedUser = await updateUser(id, updateData);
-            return NextResponse.json({ message: "OK", user: updatedUser });
-        } catch (error) {
-            console.error("Error updating user:", error);
-            return NextResponse.json(
-                { error: "Failed to update user" },
-                { status: 500 }
-            );
-        }
+        const updatedUser = await updateUser(id, updateData);
+
+        return NextResponse.json({ message: "OK", user: updatedUser });
     }
 
     // ========== USER DELETED ========== //
@@ -121,16 +116,9 @@ export async function POST(req: Request) {
             return new Response("Missing user id in webhook", { status: 400 });
         }
 
-        try {
-            const deletedUser = await deleteUser(id);
-            return NextResponse.json({ message: "OK", user: deletedUser });
-        } catch (error) {
-            console.error("Error deleting user:", error);
-            return NextResponse.json(
-                { error: "Failed to delete user" },
-                { status: 500 }
-            );
-        }
+        const deletedUser = await deleteUser(id);
+
+        return NextResponse.json({ message: "OK", user: deletedUser });
     }
 
     return new Response("Unhandled webhook event", { status: 200 });
