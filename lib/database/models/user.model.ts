@@ -11,29 +11,21 @@ const UserSchema = new Schema({
     required: true,
     unique: true,
   },
-
-  // Username should NOT be required
   username: {
     type: String,
+    required: true,
     unique: true,
-    sparse: true,    // prevents unique index errors on empty strings
   },
-
-  // Photo should NOT be required
   photo: {
     type: String,
-    default: "",
+    required: true,
   },
-
   firstName: {
     type: String,
-    default: "",
   },
   lastName: {
     type: String,
-    default: "",
   },
-
   planId: {
     type: Number,
     default: 1,
