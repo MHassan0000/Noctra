@@ -142,35 +142,99 @@ export async function deleteUser(clerkId: string, skipClerkDeletion: boolean = f
 
     // Delete from Clerk first (if not skipped - e.g., when called from webhook)
     if (!skipClerkDeletion) {
+      let clerkDeletionSuccess = false;
+      let clerkErrorThrown: Error | null = null;
+      
       try {
         const { clerkClient } = await import("@clerk/nextjs/server");
         const client = await clerkClient();
         
+        console.log(`[DELETE USER] Attempting to delete user ${clerkId} from Clerk...`);
+        
+        // Verify user exists in Clerk first
+        try {
+          const clerkUser = await client.users.getUser(clerkId);
+          console.log(`[DELETE USER] User ${clerkId} found in Clerk, proceeding with deletion...`);
+        } catch (getError: any) {
+          const getErrorStatus = getError?.status || getError?.statusCode;
+          if (getErrorStatus === 404) {
+            console.log(`[DELETE USER] User ${clerkId} not found in Clerk (already deleted), proceeding with database deletion only`);
+            clerkDeletionSuccess = true;
+          } else {
+            throw getError; // Re-throw if it's not a 404
+          }
+        }
+        
         // Delete from Clerk - this must succeed (unless user doesn't exist)
-        await client.users.deleteUser(clerkId);
-        console.log(`Successfully deleted user ${clerkId} from Clerk`);
+        if (!clerkDeletionSuccess) {
+          await client.users.deleteUser(clerkId);
+          clerkDeletionSuccess = true;
+          console.log(`[DELETE USER] ✓ Successfully deleted user ${clerkId} from Clerk`);
+        }
       } catch (clerkError: any) {
+        clerkErrorThrown = clerkError;
+        
+        // Log the full error for debugging
+        console.error("[DELETE USER] Clerk deletion error details:", {
+          error: clerkError,
+          message: clerkError?.message,
+          status: clerkError?.status,
+          statusCode: clerkError?.statusCode,
+          code: clerkError?.code,
+          errors: clerkError?.errors,
+          clerkError: clerkError?.clerkError,
+          stack: clerkError?.stack
+        });
+
         // Check if error is because user doesn't exist (404)
+        // Clerk SDK might return errors in different formats
+        const errorMessage = String(clerkError?.message || '').toLowerCase();
+        const errorStatus = clerkError?.status || clerkError?.statusCode || clerkError?.clerkError?.status;
+        const errorCode = String(clerkError?.code || '').toLowerCase();
+        
         const isNotFound = 
-          clerkError?.status === 404 || 
-          clerkError?.statusCode === 404 ||
-          clerkError?.clerkError?.status === 404 ||
-          (clerkError?.message && clerkError.message.includes('not found')) ||
-          (clerkError?.message && clerkError.message.includes('404'));
+          errorStatus === 404 ||
+          errorCode === 'not_found' ||
+          errorCode === 'resource_not_found' ||
+          errorMessage.includes('not found') ||
+          errorMessage.includes('404') ||
+          errorMessage.includes('does not exist') ||
+          errorMessage.includes('could not be found');
 
         if (isNotFound) {
           // User doesn't exist in Clerk - that's okay, continue with DB deletion
-          console.log(`User ${clerkId} not found in Clerk (may have been already deleted), proceeding with database deletion`);
+          console.log(`[DELETE USER] ⚠ User ${clerkId} not found in Clerk (may have been already deleted), proceeding with database deletion`);
+          clerkDeletionSuccess = true; // Treat as success for our purposes
+          clerkErrorThrown = null; // Clear the error since it's acceptable
         } else {
-          // For any other error, throw to prevent partial deletion
-          // This ensures we don't leave user in Clerk but delete from DB
-          console.error("Error deleting user from Clerk:", {
-            message: clerkError?.message,
-            status: clerkError?.status || clerkError?.statusCode,
-            clerkError: clerkError?.clerkError
-          });
-          throw new Error(`Failed to delete user from Clerk: ${clerkError?.message || 'Unknown error'}. User will not be deleted from database to maintain consistency.`);
+          // For any other error, we need to prevent database deletion
+          const errorDetails = {
+            message: clerkError?.message || 'Unknown error',
+            status: errorStatus,
+            code: clerkError?.code
+          };
+          
+          console.error(`[DELETE USER] ✗ CRITICAL: Failed to delete user ${clerkId} from Clerk:`, errorDetails);
+          // Don't set clerkDeletionSuccess = true, so we can check it below
         }
+      }
+
+      // CRITICAL: If Clerk deletion failed (and it wasn't a 404), throw error to prevent DB deletion
+      if (!clerkDeletionSuccess && clerkErrorThrown) {
+        const errorMessage = clerkErrorThrown?.message || 'Unknown error';
+        const errorStatus = (clerkErrorThrown as any)?.status || (clerkErrorThrown as any)?.statusCode || 'N/A';
+        const errorCode = (clerkErrorThrown as any)?.code || 'N/A';
+        
+        const finalError = new Error(
+          `[DELETE USER] CRITICAL ERROR: Failed to delete user from Clerk. ` +
+          `Error: ${errorMessage} (Status: ${errorStatus}, Code: ${errorCode}). ` +
+          `User will NOT be deleted from database to maintain consistency. ` +
+          `Please check your Clerk API key and permissions. ` +
+          `User ${clerkId} still exists in Clerk.`
+        );
+        
+        console.error(finalError.message);
+        throw finalError;
       }
     }
 
