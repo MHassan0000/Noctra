@@ -42,76 +42,77 @@ export async function POST(req: Request) {
   }
 
   const eventType = evt.type;
+  const data = evt.data;
 
-  // Respond immediately to avoid Clerk retry/timeout issues
-  queueMicrotask(async () => {
-    try {
-      const data = evt.data;
+  try {
+    // Handle user events synchronously before responding
+    if (eventType === "user.created") {
+      const {
+        id,
+        email_addresses,
+        first_name,
+        last_name,
+        username,
+        image_url,
+      } = data as any;
 
-      if (eventType === "user.created") {
-        const {
-          id,
-          email_addresses,
-          first_name,
-          last_name,
-          username,
-          image_url,
-        } = data as any;
+      console.log(
+        `📝 Creating user with clerkId: ${id}, email: ${email_addresses?.[0]?.email_address}`
+      );
 
-        console.log(
-          `📝 Creating user with clerkId: ${id}, email: ${email_addresses?.[0]?.email_address}`
-        );
+      const result = await createUser({
+        clerkId: id,
+        email: email_addresses?.[0]?.email_address ?? "",
+        username:
+          (username && typeof username === "string"
+            ? username.trim().toLowerCase()
+            : "") ||
+          (email_addresses?.[0]?.email_address
+            ? email_addresses[0].email_address.split("@")[0]
+            : `user_${id}`),
+        firstName: first_name ?? "",
+        lastName: last_name ?? "",
+        photo: image_url ?? "",
+      });
 
-        const result = await createUser({
-          clerkId: id,
-          email: email_addresses?.[0]?.email_address ?? "",
-          username:
-            (username && typeof username === "string"
-              ? username.trim().toLowerCase()
-              : "") ||
-            (email_addresses?.[0]?.email_address
-              ? email_addresses[0].email_address.split("@")[0]
-              : `user_${id}`),
-          firstName: first_name ?? "",
-          lastName: last_name ?? "",
-          photo: image_url ?? "",
-        });
-
-        console.log(`✅ User created successfully:`, result);
-      }
-
-      if (eventType === "user.updated") {
-        const { id, first_name, last_name, username, image_url } = data as any;
-
-        console.log(`📝 Updating user with clerkId: ${id}`);
-
-        const result = await updateUser(id, {
-          firstName: first_name ?? null,
-          lastName: last_name ?? null,
-          username: username ? username.trim().toLowerCase() : null,
-          photo: image_url ?? null,
-        });
-
-        console.log(`✅ User updated successfully:`, result);
-      }
-
-      if (eventType === "user.deleted") {
-        const { id } = data as any;
-
-        console.log(`📝 Deleting user with clerkId: ${id}`);
-
-        const result = await deleteUser(id);
-
-        console.log(`✅ User deleted successfully:`, result);
-      }
-    } catch (err) {
-      console.error("❌ Background handler error:", err);
-      if (err instanceof Error) {
-        console.error("Error message:", err.message);
-        console.error("Error stack:", err.stack);
-      }
+      console.log(`✅ User created successfully:`, result);
     }
-  });
+
+    if (eventType === "user.updated") {
+      const { id, first_name, last_name, username, image_url } = data as any;
+
+      console.log(`📝 Updating user with clerkId: ${id}`);
+
+      const result = await updateUser(id, {
+        firstName: first_name ?? null,
+        lastName: last_name ?? null,
+        username: username ? username.trim().toLowerCase() : null,
+        photo: image_url ?? null,
+      });
+
+      console.log(`✅ User updated successfully:`, result);
+    }
+
+    if (eventType === "user.deleted") {
+      const { id } = data as any;
+
+      console.log(`📝 Deleting user with clerkId: ${id}`);
+
+      const result = await deleteUser(id);
+
+      console.log(`✅ User deleted successfully:`, result);
+    }
+  } catch (err) {
+    console.error("❌ Webhook handler error:", err);
+    if (err instanceof Error) {
+      console.error("Error message:", err.message);
+      console.error("Error stack:", err.stack);
+    }
+    // Still return 200 to prevent Clerk from retrying
+    return new Response(JSON.stringify({ error: err instanceof Error ? err.message : "Unknown error" }), {
+      status: 200,
+    });
+  }
 
   return new Response("OK", { status: 200 });
 }
