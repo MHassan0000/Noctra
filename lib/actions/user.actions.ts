@@ -109,7 +109,7 @@ export async function updateUser(clerkId: string, user: UpdateUserParams) {
 }
 
 // DELETE
-export async function deleteUser(clerkId: string) {
+export async function deleteUser(clerkId: string, skipClerkDeletion: boolean = false) {
   try {
     await connectToDatabase();
 
@@ -128,17 +128,32 @@ export async function deleteUser(clerkId: string) {
 
     const userId = userToDelete._id;
 
+    // Delete from Clerk first (if not skipped - e.g., when called from webhook)
+    if (!skipClerkDeletion) {
+      try {
+        const { clerkClient } = await import("@clerk/nextjs/server");
+        const client = await clerkClient();
+        await client.users.deleteUser(clerkId);
+      } catch (clerkError: any) {
+        // If user doesn't exist in Clerk (404), that's okay - continue with DB deletion
+        // If it's a different error, log it but continue
+        if (clerkError?.status !== 404) {
+          console.error("Error deleting user from Clerk:", clerkError);
+        }
+      }
+    }
+
     // Delete related data (images and transactions)
     await Promise.all([
       Image.deleteMany({ author: userId }),
       Transaction.deleteMany({ buyer: userId })
     ]);
 
-    // Delete user
+    // Delete user from database
     const deletedUser = await User.findByIdAndDelete(userId);
 
     if (!deletedUser) {
-      throw new Error("Failed to delete user");
+      throw new Error("Failed to delete user from database");
     }
 
     revalidatePath("/");
@@ -149,32 +164,10 @@ export async function deleteUser(clerkId: string) {
 }
 
 // DELETE USER FROM BOTH CLERK AND DATABASE
+// This is now the default behavior of deleteUser, but kept for backward compatibility
 export async function deleteUserFromClerkAndDB(clerkId: string) {
-  try {
-    // First delete from database
-    const deletedUser = await deleteUser(clerkId);
-    
-    if (!deletedUser) {
-      throw new Error("User not found in database");
-    }
-
-    // Then delete from Clerk
-    const { clerkClient } = await import("@clerk/nextjs/server");
-    const client = await clerkClient();
-    
-    try {
-      await client.users.deleteUser(clerkId);
-    } catch (clerkError) {
-      // If Clerk deletion fails, log but don't fail the whole operation
-      // The user is already deleted from database
-      console.error("Failed to delete user from Clerk:", clerkError);
-      // Optionally, you could re-create the user in DB if needed
-    }
-
-    return JSON.parse(JSON.stringify(deletedUser));
-  } catch (error) {
-    handleError(error);
-  }
+  // deleteUser now deletes from both by default
+  return deleteUser(clerkId, false);
 }
 
 // USE CREDITS

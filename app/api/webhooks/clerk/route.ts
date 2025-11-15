@@ -158,7 +158,8 @@ export async function POST(req: Request) {
         );
       }
 
-      const deletedUser = await deleteUser(id);
+      // Skip Clerk deletion since Clerk already deleted the user (that's why we got this webhook)
+      const deletedUser = await deleteUser(id, true);
 
       // If user was already deleted or doesn't exist, return success anyway
       // This handles cases where the webhook is called multiple times
