@@ -44,6 +44,9 @@ export async function POST(req: Request) {
   const eventType = evt.type;
   const data = evt.data;
 
+  console.log(`✅ Webhook received: ${eventType}`);
+  console.log(`📋 Event data:`, JSON.stringify(data, null, 2));
+
   try {
     // Handle user events synchronously before responding
     if (eventType === "user.created") {
@@ -56,11 +59,16 @@ export async function POST(req: Request) {
         image_url,
       } = data as any;
 
-      console.log(
-        `📝 Creating user with clerkId: ${id}, email: ${email_addresses?.[0]?.email_address}`
-      );
+      console.log(`\n🔍 Extracted fields:`, {
+        id,
+        email: email_addresses?.[0]?.email_address,
+        username,
+        first_name,
+        last_name,
+        image_url,
+      });
 
-      const result = await createUser({
+      const userPayload = {
         clerkId: id,
         email: email_addresses?.[0]?.email_address ?? "",
         username:
@@ -73,9 +81,13 @@ export async function POST(req: Request) {
         firstName: first_name ?? "",
         lastName: last_name ?? "",
         photo: image_url ?? "",
-      });
+      };
 
-      console.log(`✅ User created successfully:`, result);
+      console.log(`\n💾 Creating user with payload:`, JSON.stringify(userPayload, null, 2));
+
+      const result = await createUser(userPayload);
+
+      console.log(`\n✅ User created successfully:`, JSON.stringify(result, null, 2));
     }
 
     if (eventType === "user.updated") {
@@ -103,15 +115,13 @@ export async function POST(req: Request) {
       console.log(`✅ User deleted successfully:`, result);
     }
   } catch (err) {
-    console.error("❌ Webhook handler error:", err);
+    console.error("\n❌ WEBHOOK ERROR:", err);
     if (err instanceof Error) {
-      console.error("Error message:", err.message);
-      console.error("Error stack:", err.stack);
+      console.error("Message:", err.message);
+      console.error("Stack:", err.stack);
     }
-    // Still return 200 to prevent Clerk from retrying
-    return new Response(JSON.stringify({ error: err instanceof Error ? err.message : "Unknown error" }), {
-      status: 200,
-    });
+    // Log the full error object
+    console.error("Full error object:", JSON.stringify(err, null, 2));
   }
 
   return new Response("OK", { status: 200 });
