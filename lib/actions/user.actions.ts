@@ -266,6 +266,119 @@ export async function deleteUserFromClerkAndDB(clerkId: string) {
   return deleteUser(clerkId, false);
 }
 
+// DELETE USER FROM CLERK ONLY (useful when you've already deleted from database)
+// Use this if you deleted a user from MongoDB Compass and need to clean up Clerk
+export async function deleteUserFromClerkOnly(clerkId: string) {
+  try {
+    if (!clerkId || clerkId.trim() === "") {
+      throw new Error("Clerk ID is required");
+    }
+
+    const { clerkClient } = await import("@clerk/nextjs/server");
+    const client = await clerkClient();
+    
+    console.log(`[CLEANUP] Attempting to delete user ${clerkId} from Clerk...`);
+    
+    try {
+      await client.users.deleteUser(clerkId);
+      console.log(`[CLEANUP] ✓ Successfully deleted user ${clerkId} from Clerk`);
+      return { success: true, message: `User ${clerkId} deleted from Clerk` };
+    } catch (clerkError: any) {
+      const errorStatus = clerkError?.status || clerkError?.statusCode;
+      const errorMessage = String(clerkError?.message || '').toLowerCase();
+      
+      if (errorStatus === 404 || errorMessage.includes('not found') || errorMessage.includes('404')) {
+        console.log(`[CLEANUP] User ${clerkId} not found in Clerk (already deleted)`);
+        return { success: true, message: `User ${clerkId} not found in Clerk (already deleted)` };
+      }
+      
+      throw new Error(`Failed to delete user from Clerk: ${clerkError?.message || 'Unknown error'}`);
+    }
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+// SYNC: Delete users from Clerk that don't exist in database
+// Use this to clean up orphaned users in Clerk after manual database deletions
+export async function syncClerkWithDatabase() {
+  try {
+    await connectToDatabase();
+    
+    console.log("[SYNC] Starting sync: Finding orphaned users in Clerk...");
+    
+    const { clerkClient } = await import("@clerk/nextjs/server");
+    const client = await clerkClient();
+    
+    // Get all users from database
+    const dbUsers = await User.find({}, { clerkId: 1 });
+    const dbClerkIds = new Set(dbUsers.map(u => u.clerkId));
+    
+    console.log(`[SYNC] Found ${dbClerkIds.size} users in database`);
+    
+    // Get all users from Clerk (paginated)
+    let allClerkUsers: any[] = [];
+    let offset = 0;
+    const limit = 100;
+    
+    while (true) {
+      const clerkUsersResponse = await client.users.getUserList({ limit, offset });
+      allClerkUsers = allClerkUsers.concat(clerkUsersResponse.data);
+      
+      if (clerkUsersResponse.data.length < limit) {
+        break; // No more users
+      }
+      offset += limit;
+    }
+    
+    console.log(`[SYNC] Found ${allClerkUsers.length} users in Clerk`);
+    
+    // Find users in Clerk that don't exist in database
+    const orphanedUsers = allClerkUsers.filter(
+      clerkUser => !dbClerkIds.has(clerkUser.id)
+    );
+    
+    console.log(`[SYNC] Found ${orphanedUsers.length} orphaned users in Clerk`);
+    
+    // Delete orphaned users from Clerk
+    const results = {
+      total: orphanedUsers.length,
+      deleted: 0,
+      failed: 0,
+      notFound: 0,
+      errors: [] as string[]
+    };
+    
+    for (const orphanedUser of orphanedUsers) {
+      try {
+        await client.users.deleteUser(orphanedUser.id);
+        results.deleted++;
+        console.log(`[SYNC] ✓ Deleted orphaned user ${orphanedUser.id} from Clerk`);
+      } catch (error: any) {
+        const errorStatus = error?.status || error?.statusCode;
+        if (errorStatus === 404) {
+          results.notFound++;
+        } else {
+          results.failed++;
+          const errorMsg = `Failed to delete ${orphanedUser.id}: ${error?.message || 'Unknown error'}`;
+          results.errors.push(errorMsg);
+          console.error(`[SYNC] ✗ ${errorMsg}`);
+        }
+      }
+    }
+    
+    console.log(`[SYNC] Sync complete:`, results);
+    
+    return {
+      success: true,
+      ...results,
+      message: `Sync complete: ${results.deleted} deleted, ${results.failed} failed, ${results.notFound} not found`
+    };
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 // USE CREDITS
 export async function updateCredits(userId: string, creditFee: number) {
   try {
