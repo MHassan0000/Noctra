@@ -8,42 +8,51 @@ import Transaction from "../database/models/transaction.model";
 import { connectToDatabase } from "../database/mongoose";
 import { handleError } from "../utils";
 
+// Helper function to check if Clerk error is 404
+function isClerkNotFoundError(error: any): boolean {
+  const errorStatus = error?.status || error?.statusCode || error?.clerkError?.status;
+  const errorMessage = String(error?.message || '').toLowerCase();
+  const errorCode = String(error?.code || '').toLowerCase();
+  
+  return (
+    errorStatus === 404 ||
+    errorCode === 'not_found' ||
+    errorCode === 'resource_not_found' ||
+    errorMessage.includes('not found') ||
+    errorMessage.includes('404') ||
+    errorMessage.includes('does not exist') ||
+    errorMessage.includes('could not be found')
+  );
+}
+
 // CREATE
 export async function createUser(user: CreateUserParams) {
   try {
     await connectToDatabase();
 
     // Check if user already exists by clerkId (most important check)
-    const existingUserByClerkId = await User.findOne({ clerkId: user.clerkId });
+    const existingUser = await User.findOne({ clerkId: user.clerkId });
     
-    if (existingUserByClerkId) {
-      // User with this Clerk ID already exists, return existing user
+    if (existingUser) {
       console.log(`User with Clerk ID ${user.clerkId} already exists in database`);
-      return JSON.parse(JSON.stringify(existingUserByClerkId));
+      return JSON.parse(JSON.stringify(existingUser));
     }
 
-    // Check for conflicts with email or username (but allow if it's the same Clerk user)
-    const existingUserByEmail = await User.findOne({ 
-      email: user.email,
-      clerkId: { $ne: user.clerkId }
+    // Check for conflicts with email or username in one query
+    const conflictUser = await User.findOne({
+      $or: [
+        { email: user.email, clerkId: { $ne: user.clerkId } },
+        { username: user.username, clerkId: { $ne: user.clerkId } }
+      ]
     });
     
-    if (existingUserByEmail) {
-      throw new Error("User with this email already exists");
-    }
-
-    const existingUserByUsername = await User.findOne({ 
-      username: user.username,
-      clerkId: { $ne: user.clerkId }
-    });
-    
-    if (existingUserByUsername) {
-      throw new Error("User with this username already exists");
+    if (conflictUser) {
+      const conflictField = conflictUser.email === user.email ? 'email' : 'username';
+      throw new Error(`User with this ${conflictField} already exists`);
     }
 
     const newUser = await User.create(user);
     console.log(`Successfully created user ${user.clerkId} in database`);
-
     return JSON.parse(JSON.stringify(newUser));
   } catch (error) {
     handleError(error);
@@ -54,17 +63,13 @@ export async function createUser(user: CreateUserParams) {
 export async function getUserById(userId: string) {
   try {
     await connectToDatabase();
-
-    if (!userId || userId.trim() === "") {
+    if (!userId?.trim()) {
       throw new Error("User ID is required");
     }
-
     const user = await User.findOne({ clerkId: userId });
-
     if (!user) {
       throw new Error("User not found");
     }
-
     return JSON.parse(JSON.stringify(user));
   } catch (error) {
     handleError(error);
@@ -75,18 +80,13 @@ export async function getUserById(userId: string) {
 export async function updateUser(clerkId: string, user: UpdateUserParams) {
   try {
     await connectToDatabase();
-
-    if (!clerkId || clerkId.trim() === "") {
+    if (!clerkId?.trim()) {
       throw new Error("Clerk ID is required");
     }
-
-    // Check if user exists
     const existingUser = await User.findOne({ clerkId });
     if (!existingUser) {
       throw new Error("User not found");
     }
-
-    // If username is being updated, check for conflicts
     if (user.username && user.username !== existingUser.username) {
       const usernameExists = await User.findOne({ 
         username: user.username,
@@ -96,23 +96,14 @@ export async function updateUser(clerkId: string, user: UpdateUserParams) {
         throw new Error("Username already taken");
       }
     }
-
     const updatedUser = await User.findOneAndUpdate(
       { clerkId },
-      { 
-        ...user,
-        updatedAt: new Date()
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
+      { ...user, updatedAt: new Date() },
+      { new: true, runValidators: true }
     );
-
     if (!updatedUser) {
       throw new Error("User update failed");
     }
-
     revalidatePath("/");
     return JSON.parse(JSON.stringify(updatedUser));
   } catch (error) {
@@ -124,121 +115,45 @@ export async function updateUser(clerkId: string, user: UpdateUserParams) {
 export async function deleteUser(clerkId: string, skipClerkDeletion: boolean = false) {
   try {
     await connectToDatabase();
-
-    if (!clerkId || clerkId.trim() === "") {
+    if (!clerkId?.trim()) {
       throw new Error("Clerk ID is required");
     }
 
-    // Find user to delete
     const userToDelete = await User.findOne({ clerkId });
-
     if (!userToDelete) {
-      // User doesn't exist, return null instead of throwing error
-      // This allows webhook to handle gracefully if user was already deleted
-      return null;
+      return null; // User doesn't exist - allow graceful handling
     }
 
     const userId = userToDelete._id;
 
-    // Delete from Clerk first (if not skipped - e.g., when called from webhook)
+    // Delete from Clerk first (if not skipped)
     if (!skipClerkDeletion) {
-      let clerkDeletionSuccess = false;
-      let clerkErrorThrown: Error | null = null;
-      
       try {
         const { clerkClient } = await import("@clerk/nextjs/server");
         const client = await clerkClient();
         
         console.log(`[DELETE USER] Attempting to delete user ${clerkId} from Clerk...`);
-        
-        // Verify user exists in Clerk first
-        try {
-          const clerkUser = await client.users.getUser(clerkId);
-          console.log(`[DELETE USER] User ${clerkId} found in Clerk, proceeding with deletion...`);
-        } catch (getError: any) {
-          const getErrorStatus = getError?.status || getError?.statusCode;
-          if (getErrorStatus === 404) {
-            console.log(`[DELETE USER] User ${clerkId} not found in Clerk (already deleted), proceeding with database deletion only`);
-            clerkDeletionSuccess = true;
-          } else {
-            throw getError; // Re-throw if it's not a 404
-          }
-        }
-        
-        // Delete from Clerk - this must succeed (unless user doesn't exist)
-        if (!clerkDeletionSuccess) {
-          await client.users.deleteUser(clerkId);
-          clerkDeletionSuccess = true;
-          console.log(`[DELETE USER] ✓ Successfully deleted user ${clerkId} from Clerk`);
-        }
+        await client.users.deleteUser(clerkId);
+        console.log(`[DELETE USER] ✓ Successfully deleted user ${clerkId} from Clerk`);
       } catch (clerkError: any) {
-        clerkErrorThrown = clerkError;
-        
-        // Log the full error for debugging
-        console.error("[DELETE USER] Clerk deletion error details:", {
-          error: clerkError,
-          message: clerkError?.message,
-          status: clerkError?.status,
-          statusCode: clerkError?.statusCode,
-          code: clerkError?.code,
-          errors: clerkError?.errors,
-          clerkError: clerkError?.clerkError,
-          stack: clerkError?.stack
-        });
-
-        // Check if error is because user doesn't exist (404)
-        // Clerk SDK might return errors in different formats
-        const errorMessage = String(clerkError?.message || '').toLowerCase();
-        const errorStatus = clerkError?.status || clerkError?.statusCode || clerkError?.clerkError?.status;
-        const errorCode = String(clerkError?.code || '').toLowerCase();
-        
-        const isNotFound = 
-          errorStatus === 404 ||
-          errorCode === 'not_found' ||
-          errorCode === 'resource_not_found' ||
-          errorMessage.includes('not found') ||
-          errorMessage.includes('404') ||
-          errorMessage.includes('does not exist') ||
-          errorMessage.includes('could not be found');
-
-        if (isNotFound) {
-          // User doesn't exist in Clerk - that's okay, continue with DB deletion
-          console.log(`[DELETE USER] ⚠ User ${clerkId} not found in Clerk (may have been already deleted), proceeding with database deletion`);
-          clerkDeletionSuccess = true; // Treat as success for our purposes
-          clerkErrorThrown = null; // Clear the error since it's acceptable
+        if (isClerkNotFoundError(clerkError)) {
+          console.log(`[DELETE USER] User ${clerkId} not found in Clerk (already deleted), proceeding with database deletion`);
         } else {
-          // For any other error, we need to prevent database deletion
-          const errorDetails = {
-            message: clerkError?.message || 'Unknown error',
-            status: errorStatus,
+          // Log full error for debugging
+          console.error("[DELETE USER] Clerk deletion error:", {
+            message: clerkError?.message,
+            status: clerkError?.status || clerkError?.statusCode,
             code: clerkError?.code
-          };
-          
-          console.error(`[DELETE USER] ✗ CRITICAL: Failed to delete user ${clerkId} from Clerk:`, errorDetails);
-          // Don't set clerkDeletionSuccess = true, so we can check it below
+          });
+          throw new Error(
+            `Failed to delete user from Clerk: ${clerkError?.message || 'Unknown error'}. ` +
+            `User will NOT be deleted from database to maintain consistency.`
+          );
         }
-      }
-
-      // CRITICAL: If Clerk deletion failed (and it wasn't a 404), throw error to prevent DB deletion
-      if (!clerkDeletionSuccess && clerkErrorThrown) {
-        const errorMessage = clerkErrorThrown?.message || 'Unknown error';
-        const errorStatus = (clerkErrorThrown as any)?.status || (clerkErrorThrown as any)?.statusCode || 'N/A';
-        const errorCode = (clerkErrorThrown as any)?.code || 'N/A';
-        
-        const finalError = new Error(
-          `[DELETE USER] CRITICAL ERROR: Failed to delete user from Clerk. ` +
-          `Error: ${errorMessage} (Status: ${errorStatus}, Code: ${errorCode}). ` +
-          `User will NOT be deleted from database to maintain consistency. ` +
-          `Please check your Clerk API key and permissions. ` +
-          `User ${clerkId} still exists in Clerk.`
-        );
-        
-        console.error(finalError.message);
-        throw finalError;
       }
     }
 
-    // Delete related data (images and transactions)
+    // Delete related data
     await Promise.all([
       Image.deleteMany({ author: userId }),
       Transaction.deleteMany({ buyer: userId })
@@ -246,12 +161,11 @@ export async function deleteUser(clerkId: string, skipClerkDeletion: boolean = f
 
     // Delete user from database
     const deletedUser = await User.findByIdAndDelete(userId);
-
     if (!deletedUser) {
       throw new Error("Failed to delete user from database");
     }
 
-    console.log(`Successfully deleted user ${clerkId} from database`);
+    console.log(`[DELETE USER] Successfully deleted user ${clerkId} from database`);
     revalidatePath("/");
     return JSON.parse(JSON.stringify(deletedUser));
   } catch (error) {
@@ -270,7 +184,7 @@ export async function deleteUserFromClerkAndDB(clerkId: string) {
 // Use this if you deleted a user from MongoDB Compass and need to clean up Clerk
 export async function deleteUserFromClerkOnly(clerkId: string) {
   try {
-    if (!clerkId || clerkId.trim() === "") {
+    if (!clerkId?.trim()) {
       throw new Error("Clerk ID is required");
     }
 
@@ -284,14 +198,10 @@ export async function deleteUserFromClerkOnly(clerkId: string) {
       console.log(`[CLEANUP] ✓ Successfully deleted user ${clerkId} from Clerk`);
       return { success: true, message: `User ${clerkId} deleted from Clerk` };
     } catch (clerkError: any) {
-      const errorStatus = clerkError?.status || clerkError?.statusCode;
-      const errorMessage = String(clerkError?.message || '').toLowerCase();
-      
-      if (errorStatus === 404 || errorMessage.includes('not found') || errorMessage.includes('404')) {
+      if (isClerkNotFoundError(clerkError)) {
         console.log(`[CLEANUP] User ${clerkId} not found in Clerk (already deleted)`);
         return { success: true, message: `User ${clerkId} not found in Clerk (already deleted)` };
       }
-      
       throw new Error(`Failed to delete user from Clerk: ${clerkError?.message || 'Unknown error'}`);
     }
   } catch (error) {
@@ -324,10 +234,7 @@ export async function syncClerkWithDatabase() {
     while (true) {
       const clerkUsersResponse = await client.users.getUserList({ limit, offset });
       allClerkUsers = allClerkUsers.concat(clerkUsersResponse.data);
-      
-      if (clerkUsersResponse.data.length < limit) {
-        break; // No more users
-      }
+      if (clerkUsersResponse.data.length < limit) break;
       offset += limit;
     }
     
@@ -355,8 +262,7 @@ export async function syncClerkWithDatabase() {
         results.deleted++;
         console.log(`[SYNC] ✓ Deleted orphaned user ${orphanedUser.id} from Clerk`);
       } catch (error: any) {
-        const errorStatus = error?.status || error?.statusCode;
-        if (errorStatus === 404) {
+        if (isClerkNotFoundError(error)) {
           results.notFound++;
         } else {
           results.failed++;
@@ -383,35 +289,27 @@ export async function syncClerkWithDatabase() {
 export async function updateCredits(userId: string, creditFee: number) {
   try {
     await connectToDatabase();
-
-    if (!userId || userId.trim() === "") {
+    if (!userId?.trim()) {
       throw new Error("User ID is required");
     }
-
     if (typeof creditFee !== "number" || isNaN(creditFee)) {
       throw new Error("Credit fee must be a valid number");
     }
-
     const updatedUserCredits = await User.findOneAndUpdate(
       { _id: userId },
       { $inc: { creditBalance: creditFee }},
       { new: true, runValidators: true }
     );
-
     if (!updatedUserCredits) {
       throw new Error("User credits update failed - user not found");
     }
-
-    // Ensure credit balance doesn't go negative
     if (updatedUserCredits.creditBalance < 0) {
-      // Revert the update
       await User.findOneAndUpdate(
         { _id: userId },
         { $inc: { creditBalance: -creditFee }}
       );
       throw new Error("Insufficient credits");
     }
-
     return JSON.parse(JSON.stringify(updatedUserCredits));
   } catch (error) {
     handleError(error);
