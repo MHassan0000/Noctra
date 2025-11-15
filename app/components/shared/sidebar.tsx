@@ -37,7 +37,7 @@ export default function Sidebar() {
           <div className="relative w-64 max-w-full h-full bg-white/95 backdrop-blur-sm border-r border-purple-50 shadow-xl p-4 flex flex-col">
             <div className="flex items-center justify-between">
               <Link href="/" onClick={() => setIsOpen(false)}>
-                <Image src="/images/texture.png" alt="Noctra" width={36} height={36} className="rounded-md" />
+                <Image src="/images/texture.png" alt="Noctra" width={40} height={40} className="rounded-md" />
               </Link>
               <button aria-label="Close menu" onClick={() => setIsOpen(false)} className="p-2 rounded-md">
                 <X className="w-5 h-5 text-gray-700" />
