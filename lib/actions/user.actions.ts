@@ -9,25 +9,13 @@ import { handleError } from "../utils";
 // CREATE
 export async function createUser(user: CreateUserParams) {
   try {
-    console.log("[createUser] Connecting to database...");
     await connectToDatabase();
-    console.log("[createUser] Database connected. Creating user...");
-    console.log("[createUser] User data:", JSON.stringify(user, null, 2));
 
     const newUser = await User.create(user);
-    
-    console.log("[createUser] User created in database:", JSON.stringify(newUser, null, 2));
 
     return JSON.parse(JSON.stringify(newUser));
   } catch (error) {
-    console.error("❌ createUser error:", error);
-    if (error instanceof Error) {
-      console.error("Error name:", error.name);
-      console.error("Error message:", error.message);
-      console.error("Error code:", (error as any).code);
-      console.error("Error details:", (error as any).errors);
-    }
-    throw error;
+    handleError(error);
   }
 }
 
@@ -42,8 +30,7 @@ export async function getUserById(userId: string) {
 
     return JSON.parse(JSON.stringify(user));
   } catch (error) {
-    console.error("❌ getUserById error:", error);
-    throw error;
+    handleError(error);
   }
 }
 
@@ -60,8 +47,7 @@ export async function updateUser(clerkId: string, user: UpdateUserParams) {
     
     return JSON.parse(JSON.stringify(updatedUser));
   } catch (error) {
-    console.error("❌ updateUser error:", error);
-    throw error;
+    handleError(error);
   }
 }
 
@@ -83,8 +69,7 @@ export async function deleteUser(clerkId: string) {
 
     return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
   } catch (error) {
-    console.error("❌ deleteUser error:", error);
-    throw error;
+    handleError(error);
   }
 }
 
@@ -103,7 +88,6 @@ export async function updateCredits(userId: string, creditFee: number) {
 
     return JSON.parse(JSON.stringify(updatedUserCredits));
   } catch (error) {
-    console.error("❌ updateCredits error:", error);
-    throw error;
+    handleError(error);
   }
 }
