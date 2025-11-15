@@ -8,7 +8,7 @@ import Transaction from "../database/models/transaction.model";
 import { connectToDatabase } from "../database/mongoose";
 import { handleError } from "../utils";
 
-// Helper function to check if Clerk error is 404
+
 function isClerkNotFoundError(error: any): boolean {
   const errorStatus = error?.status || error?.statusCode || error?.clerkError?.status;
   const errorMessage = String(error?.message || '').toLowerCase();
@@ -174,14 +174,13 @@ export async function deleteUser(clerkId: string, skipClerkDeletion: boolean = f
 }
 
 // DELETE USER FROM BOTH CLERK AND DATABASE
-// This is now the default behavior of deleteUser, but kept for backward compatibility
+
 export async function deleteUserFromClerkAndDB(clerkId: string) {
-  // deleteUser now deletes from both by default
+ 
   return deleteUser(clerkId, false);
 }
 
-// DELETE USER FROM CLERK ONLY (useful when you've already deleted from database)
-// Use this if you deleted a user from MongoDB Compass and need to clean up Clerk
+
 export async function deleteUserFromClerkOnly(clerkId: string) {
   try {
     if (!clerkId?.trim()) {
@@ -209,8 +208,7 @@ export async function deleteUserFromClerkOnly(clerkId: string) {
   }
 }
 
-// SYNC: Delete users from Clerk that don't exist in database
-// Use this to clean up orphaned users in Clerk after manual database deletions
+
 export async function syncClerkWithDatabase() {
   try {
     await connectToDatabase();
