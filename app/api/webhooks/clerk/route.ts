@@ -2,34 +2,31 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import type { WebhookEvent } from "@clerk/nextjs/server"; // typing only, OK to keep
+import type { WebhookEvent } from "@clerk/nextjs/server";
 
 import { createUser, deleteUser, updateUser } from "@/lib/actions/user.actions";
 
-
-
 export async function POST(req: Request) {
-  const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+  const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET; // ✅ FIXED
   if (!WEBHOOK_SECRET) {
-    console.error("Missing WEBHOOK_SECRET env var");
-    return NextResponse.json({ error: "Missing WEBHOOK_SECRET" }, { status: 500 });
+    console.error("❌ Missing CLERK_WEBHOOK_SECRET");
+    return NextResponse.json({ error: "Missing secret" }, { status: 500 });
   }
 
-  // await headers() — works whether headers() returns a Promise or a plain ReadonlyHeaders
-  const h = await headers();
+  // ❌ do NOT "await" headers()
+  const h = (await Promise.resolve(headers())) as Headers;
   const svix_id = h.get("svix-id") ?? "";
-  const svix_timestamp = h.get("svix-timestamp") ?? "";
-  const svix_signature = h.get("svix-signature") ?? "";
+  const svix_timestamp = h.get("svix-timestamp");
+  const svix_signature = h.get("svix-signature");
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    console.error("Missing svix headers", { svix_id, svix_timestamp, svix_signature });
+    console.error("❌ Missing svix headers");
     return NextResponse.json({ error: "Missing svix headers" }, { status: 400 });
   }
 
-  // read raw body for svix verification
+  // Read raw body FOR svix verification
   const rawBody = await req.text();
 
-  // verify via svix
   let evt: WebhookEvent;
   try {
     const wh = new Webhook(WEBHOOK_SECRET);
@@ -39,89 +36,65 @@ export async function POST(req: Request) {
       "svix-signature": svix_signature,
     }) as WebhookEvent;
   } catch (err) {
-    console.error("Webhook signature verification failed:", err);
+    console.error("❌ Signature verification error:", err);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  // make event data safe
-  const eventType = evt?.type ?? "";
-  // evt.data shape depends on event type — we handle user.created/user.updated/user.deleted
+  const eventType = evt.type;
+
   try {
-    // ---------- USER CREATED ----------
+    // USER CREATED
     if (eventType === "user.created") {
-      // extract fields safely from evt.data
-      const {
-        id,
-        email_addresses,
-        image_url,
-        first_name,
-        last_name,
-        username,
-      } = evt.data as any;
+      const { id, email_addresses, image_url, first_name, last_name, username } =
+        evt.data as any;
 
-      const email: string =
-        (Array.isArray(email_addresses) && email_addresses[0]?.email_address) || "";
+      const email =
+        Array.isArray(email_addresses) &&
+        email_addresses[0]?.email_address
+          ? email_addresses[0].email_address
+          : "";
 
-      // safe username: prefer provided username, then email prefix, then fallback to clerk id
-      const safeUsername: string =
-        (typeof username === "string" && username.trim().length > 0
-          ? username.trim().toLowerCase()
-          : email
-          ? email.split("@")[0].toLowerCase()
-          : `user_${String(id)}`);
+      const safeUsername =
+        username?.trim().toLowerCase() ||
+        (email ? email.split("@")[0] : `user_${id}`);
 
-      const userPayload: CreateUserParams = {
+      const newUser = await createUser({
         clerkId: String(id),
-        email: String(email),
+        email,
         username: safeUsername,
         firstName: first_name ?? "",
         lastName: last_name ?? "",
         photo: image_url ?? "",
-      };
-
-      const newUser = await createUser(userPayload);
-
-      // NOTE: we do NOT attempt to update Clerk metadata here to avoid clerkClient mismatch issues.
-      // If you want to set Clerk publicMetadata later, ensure clerkClient import matches your installed Clerk package.
+      });
 
       return NextResponse.json({ message: "OK", user: newUser });
     }
 
-    // ---------- USER UPDATED ----------
+    // USER UPDATED
     if (eventType === "user.updated") {
-      const { id, image_url, first_name, last_name, username, email_addresses } =
-        evt.data as any;
+      const { id, image_url, first_name, last_name, username } = evt.data as any;
 
-      // If username is null/undefined, make it null (matches your UpdateUserParams)
-      const maybeUsername: string | null =
-        typeof username === "string" && username.trim().length > 0
-          ? username.trim().toLowerCase()
-          : null;
-
-      const updatePayload: UpdateUserParams = {
+      const updatePayload = {
         firstName: first_name ?? null,
         lastName: last_name ?? null,
-        username: maybeUsername,
+        username: username?.trim().toLowerCase() || null,
         photo: image_url ?? null,
       };
 
       const updatedUser = await updateUser(String(id), updatePayload);
-
       return NextResponse.json({ message: "OK", user: updatedUser });
     }
 
-    // ---------- USER DELETED ----------
+    // USER DELETED
     if (eventType === "user.deleted") {
       const { id } = evt.data as any;
       const deletedUser = await deleteUser(String(id));
       return NextResponse.json({ message: "OK", user: deletedUser });
     }
 
-    // Unknown event: respond 200 so Clerk stops retrying (or change to 204)
     return new Response("", { status: 200 });
   } catch (err) {
-    // log and return 500 so Clerk shows the failure in dashboard
-    console.error("Webhook handler error:", err);
+    console.error("❌ Webhook handler error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
