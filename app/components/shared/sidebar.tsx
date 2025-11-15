@@ -5,6 +5,7 @@ import { navigationLinks } from "../../../constants/index"
 import Image from "next/image"
 import { Home, Layers, DollarSign, BookOpen, Image as ImageIcon, Sparkles, Scissors,Eraser, Repeat, Menu, X, Mail } from "lucide-react"
 import { useUser, UserButton, SignInButton } from "@clerk/nextjs"
+import { div } from "framer-motion/client"
 
 interface NavLink {
   label: string
@@ -124,20 +125,24 @@ export default function Sidebar() {
           </div>
         )}
 
-        <div className="mt-auto mb-3 flex flex-col items-center gap-3 w-full">
+        <div className="mt-auto mb-5 ">
           {isSignedIn ? (
+            <div className="flex flex-col items-center gap-5 w-full">
             <div className="w-full flex items-center justify-center">
               <UserButton appearance={{elements:{userButtonAvatarBox:{width:34,height:34}}}}/>
             </div>
-          ) : (
-            <div  className="text-xs font-bold rounded-xl shadow-md hover:scale-105 transition bg-linear-to-r from-indigo-500 to-purple-500 text-white text-center px-2 py-2"><SignInButton/></div>
-          )}
-
-          <div className="w-full flex items-center justify-center">
+            <div className="w-full flex items-center justify-center">
             <Link href="/credits" aria-label="Get Credits" className="w-9 h-9 rounded-full bg-linear-to-r from-indigo-500 to-purple-500 text-white flex items-center justify-center shadow-md hover:scale-105 transition">
               <DollarSign className="w-4 h-4" />
             </Link>
           </div>
+            </div>
+            
+          ) : (
+            <div  className="text-xs font-bold rounded-xl shadow-md hover:scale-105 transition bg-linear-to-r from-indigo-500 to-purple-500 text-white text-center px-2 py-2"><SignInButton/></div>
+          )}
+
+          
         </div>
       </aside>
 
