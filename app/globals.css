@@ -225,6 +225,7 @@ body {
 .gradient-text {
   background-image: linear-gradient(to right, #8b5cf6, #ec4899);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -389,4 +390,3 @@ body {
   font-weight: 600;
   color: #384262;
 }
-
