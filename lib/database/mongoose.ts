@@ -16,7 +16,7 @@ export async function connectToDatabase() {
   }
   if(!MONGODB_URL) throw new Error("Please define the MONGODB_URL environment variable inside .env.local");
 
-  cached.promise = cached.promise || mongoose.connect(MONGODB_URL , {dbName: "Noctra" , bufferCommands: false})
+  cached.promise = cached.promise || mongoose.connect(MONGODB_URL , {dbName: "noctra" , bufferCommands: false})
   cached.conn = await cached.promise;
   return cached.conn;
 }
