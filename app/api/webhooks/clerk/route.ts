@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { clerkClient } from "@clerk/nextjs/server";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
@@ -7,7 +6,7 @@ import { Webhook } from "svix";
 
 import { createUser, deleteUser, updateUser } from "@/lib/actions/user.actions";
 
-// Disable body parsing, we need the raw body for Svix verification
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -39,10 +38,9 @@ export async function POST(req: Request) {
     );
   }
 
-  // Get the raw body as text for Svix verification
   const body = await req.text();
 
-  // Create a new Svix instance with your secret.
+ 
   const wh = new Webhook(WEBHOOK_SECRET);
 
   let evt: WebhookEvent;

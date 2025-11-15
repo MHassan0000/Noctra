@@ -1,7 +1,7 @@
 import mongoose, { Mongoose } from 'mongoose';
 
 const MONGODB_URL = process.env.MONGODB_URL;
-// Use environment variable or default to "Noctra" (capitalized) to match existing database
+
 const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || "Noctra";
 
 interface MongooseConnection {
@@ -31,13 +31,11 @@ export async function connectToDatabase() {
     bufferCommands: false,
   };
 
-  // Use database name from connection string if present, otherwise use configured name
-  // This ensures we use the correct case-sensitive database name
+ 
   if (urlDbName && urlDbName.trim()) {
-    // Database name is already in the connection string, don't override
-    // Mongoose will use the database from the connection string
+   
   } else {
-    // No database name in connection string, use the configured one
+    
     connectionOptions.dbName = MONGODB_DB_NAME;
   }
 
