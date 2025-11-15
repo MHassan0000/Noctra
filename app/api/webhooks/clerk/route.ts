@@ -113,6 +113,13 @@ export async function POST(req: Request) {
     const { id, image_url, first_name, last_name, username } = evt.data;
 
     try {
+      if (!id) {
+        return NextResponse.json(
+          { error: "User ID is missing" },
+          { status: 400 }
+        );
+      }
+
       const user = {
         firstName: first_name || null,
         lastName: last_name || null,
@@ -121,6 +128,13 @@ export async function POST(req: Request) {
       };
 
       const updatedUser = await updateUser(id, user);
+
+      if (!updatedUser) {
+        return NextResponse.json(
+          { error: "User not found for update" },
+          { status: 404 }
+        );
+      }
 
       return NextResponse.json({ message: "OK", user: updatedUser });
     } catch (error) {
@@ -145,6 +159,16 @@ export async function POST(req: Request) {
       }
 
       const deletedUser = await deleteUser(id);
+
+      // If user was already deleted or doesn't exist, return success anyway
+      // This handles cases where the webhook is called multiple times
+      if (!deletedUser) {
+        console.log(`User with Clerk ID ${id} was already deleted or not found in database`);
+        return NextResponse.json({ 
+          message: "OK", 
+          note: "User was already deleted or not found in database" 
+        });
+      }
 
       return NextResponse.json({ message: "OK", user: deletedUser });
     } catch (error) {
