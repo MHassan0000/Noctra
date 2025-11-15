@@ -13,24 +13,36 @@ export async function createUser(user: CreateUserParams) {
   try {
     await connectToDatabase();
 
-    // Check if user already exists
-    const existingUser = await User.findOne({
-      $or: [
-        { clerkId: user.clerkId },
-        { email: user.email },
-        { username: user.username }
-      ]
-    });
+    // Check if user already exists by clerkId (most important check)
+    const existingUserByClerkId = await User.findOne({ clerkId: user.clerkId });
+    
+    if (existingUserByClerkId) {
+      // User with this Clerk ID already exists, return existing user
+      console.log(`User with Clerk ID ${user.clerkId} already exists in database`);
+      return JSON.parse(JSON.stringify(existingUserByClerkId));
+    }
 
-    if (existingUser) {
-      // If user exists with same clerkId, return existing user
-      if (existingUser.clerkId === user.clerkId) {
-        return JSON.parse(JSON.stringify(existingUser));
-      }
-      throw new Error("User with this email or username already exists");
+    // Check for conflicts with email or username (but allow if it's the same Clerk user)
+    const existingUserByEmail = await User.findOne({ 
+      email: user.email,
+      clerkId: { $ne: user.clerkId }
+    });
+    
+    if (existingUserByEmail) {
+      throw new Error("User with this email already exists");
+    }
+
+    const existingUserByUsername = await User.findOne({ 
+      username: user.username,
+      clerkId: { $ne: user.clerkId }
+    });
+    
+    if (existingUserByUsername) {
+      throw new Error("User with this username already exists");
     }
 
     const newUser = await User.create(user);
+    console.log(`Successfully created user ${user.clerkId} in database`);
 
     return JSON.parse(JSON.stringify(newUser));
   } catch (error) {
@@ -133,12 +145,31 @@ export async function deleteUser(clerkId: string, skipClerkDeletion: boolean = f
       try {
         const { clerkClient } = await import("@clerk/nextjs/server");
         const client = await clerkClient();
+        
+        // Delete from Clerk - this must succeed (unless user doesn't exist)
         await client.users.deleteUser(clerkId);
+        console.log(`Successfully deleted user ${clerkId} from Clerk`);
       } catch (clerkError: any) {
-        // If user doesn't exist in Clerk (404), that's okay - continue with DB deletion
-        // If it's a different error, log it but continue
-        if (clerkError?.status !== 404) {
-          console.error("Error deleting user from Clerk:", clerkError);
+        // Check if error is because user doesn't exist (404)
+        const isNotFound = 
+          clerkError?.status === 404 || 
+          clerkError?.statusCode === 404 ||
+          clerkError?.clerkError?.status === 404 ||
+          (clerkError?.message && clerkError.message.includes('not found')) ||
+          (clerkError?.message && clerkError.message.includes('404'));
+
+        if (isNotFound) {
+          // User doesn't exist in Clerk - that's okay, continue with DB deletion
+          console.log(`User ${clerkId} not found in Clerk (may have been already deleted), proceeding with database deletion`);
+        } else {
+          // For any other error, throw to prevent partial deletion
+          // This ensures we don't leave user in Clerk but delete from DB
+          console.error("Error deleting user from Clerk:", {
+            message: clerkError?.message,
+            status: clerkError?.status || clerkError?.statusCode,
+            clerkError: clerkError?.clerkError
+          });
+          throw new Error(`Failed to delete user from Clerk: ${clerkError?.message || 'Unknown error'}. User will not be deleted from database to maintain consistency.`);
         }
       }
     }
@@ -156,6 +187,7 @@ export async function deleteUser(clerkId: string, skipClerkDeletion: boolean = f
       throw new Error("Failed to delete user from database");
     }
 
+    console.log(`Successfully deleted user ${clerkId} from database`);
     revalidatePath("/");
     return JSON.parse(JSON.stringify(deletedUser));
   } catch (error) {
