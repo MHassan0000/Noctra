@@ -4,27 +4,27 @@ export const navigationLinks = [
  
   {
     label: "Image Restore",
-    route: "/transformations/add/restore",
+    route: "/transformation/add/restore",
     
   },
   {
     label: "Generative Fill",
-    route: "/transformations/add/fill",
+    route: "/transformation/add/fill",
    
   },
   {
     label: "Object Remove",
-    route: "/transformations/add/remove",
+    route: "/transformation/add/remove",
     
   },
   {
     label: "Object Recolor",
-    route: "/transformations/add/recolor",
+    route: "/transformation/add/recolor",
    
   },
   {
     label: "Background Remove",
-    route: "/transformations/add/removeBackground",
+    route: "/transformation/add/removeBackground",
     
   },
  

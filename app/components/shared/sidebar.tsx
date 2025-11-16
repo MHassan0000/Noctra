@@ -5,7 +5,6 @@ import { navigationLinks } from "../../../constants/index"
 import Image from "next/image"
 import { Home, Layers, DollarSign, BookOpen, Image as ImageIcon, Sparkles, Scissors,Eraser, Repeat, Menu, X, Mail } from "lucide-react"
 import { useUser, UserButton, SignInButton } from "@clerk/nextjs"
-import { div } from "framer-motion/client"
 
 interface NavLink {
   label: string
