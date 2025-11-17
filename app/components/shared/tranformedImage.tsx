@@ -71,7 +71,7 @@ const TransformedImage = ({ image, type, title, transformationConfig,
                     )}
                 </div>
             ) : (
-                <div className="flex-center p-14-medium h-full min-h-72 flex-col gap-5 pb-2 border border-dashed bg-purple-100/20 shadow-inner">
+                <div className="flex-center p-14-medium h-full min-h-72 flex-col gap-5 pb-2 rounded-lg border border-dashed bg-purple-100/20 shadow-inner">
                     Transformed Image
                 </div>
             )}

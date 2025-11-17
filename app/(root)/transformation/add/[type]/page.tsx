@@ -31,7 +31,7 @@ export default async function AddTransformationTypePage({ params }: SearchParamP
 
 
           <Header title={Transformation.title} subtitle={Transformation.subTitle}></Header>
-          <div className=  "m-10 p-4  bg-white rounded-lg shadow-md w-[600px]">
+          <div className=  "m-10 mx-auto p-4  bg-white rounded-lg shadow-md xm:w-[300px] sm:w-[400px] md:w-[800px] xl:w-full">
 
             <TransformationForm
               action="Add"

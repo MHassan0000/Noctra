@@ -123,7 +123,7 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                                 </SelectTrigger>
                                 <SelectContent>
                                     {Object.keys(aspectRatioOptions).map((key) => (
-                                        <SelectItem key={key} value={key} className='select-item'>
+                                        <SelectItem key={key} value={key} className='py-3 cursor-pointer hover:bg-purple-100'>
                                             {aspectRatioOptions[key as AspectRatioKey].label}
                                         </SelectItem>
 
@@ -134,7 +134,7 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                     />
                 )}
                 {(type === 'remove' || type === 'recolor') && (
-                    <div className="prompt-field">
+                    <div className="flex flex-col gap-5 lg:flex-row lg:gap-10">
                         <CustomInput
                             control={form.control}
                             name="prompt"
@@ -145,7 +145,7 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                             render={({ field }) => (
                                 <Input
                                     value={field.value}
-                                    className="input-field"
+                                    className="rounded-2xl border-2 border-purple-200/20 shadow-sm shadow-purple-200/15 text-dark-600 disabled:opacity-100 p-16-semibold h-[50px] md:h-[54px] focus-visible:ring-offset-0 px-4 py-3 focus-visible:ring-transparent !important"
                                     onChange={(e) => onInputChangeHandler(
                                         'prompt',
                                         e.target.value,
@@ -166,7 +166,7 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                                     <Input
 
                                         value={field.value}
-                                        className="input-field"
+                                        className="rounded-2xl border-2 border-purple-200/20 shadow-sm shadow-purple-200/15 text-dark-600 disabled:opacity-100 p-16-semibold h-[50px] md:h-[54px] focus-visible:ring-offset-0 px-4 py-3 focus-visible:ring-transparent !important"
                                         onChange={(e) => onInputChangeHandler(
                                             'color',
                                             e.target.value,
