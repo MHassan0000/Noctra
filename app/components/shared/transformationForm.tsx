@@ -7,7 +7,8 @@ import { useForm } from "react-hook-form"
 import { Button } from "@/app/components/ui/button"
 import { CustomInput } from './customInput'
 import { aspectRatioOptions, transformationTypes } from '@/constants'
-import { deepMergeObjects,debounce } from '@/lib/utils'
+import { deepMergeObjects, debounce } from '@/lib/utils'
+import MediaUploader from '@/app/components/shared/MediaUploader'
 
 import {
     Form,
@@ -91,7 +92,7 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
         setIsTransforming(true)
 
         setTransformationConfig(
-            deepMergeObjects(NewTransformation,TransformationConfig )
+            deepMergeObjects(NewTransformation, TransformationConfig)
         )
 
         setNewTransformation(null)
@@ -175,6 +176,18 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                         )}
                     </div>
                 )}
+                <div className="media-uploader-field">
+                    <CustomInput
+                        control={form.control}
+                        name="publicId"
+                        className="flex size-full flex-col"
+                        render={({ field }) => (
+                            <MediaUploader
+                                
+                            />
+                        )}
+                    />
+                </div>
 
 
                 <div className="flex flex-col gap-4">

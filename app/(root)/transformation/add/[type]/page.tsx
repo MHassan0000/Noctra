@@ -14,7 +14,7 @@ export default async function AddTransformationTypePage({ params }: SearchParamP
   if (!userId) {
     redirect('/sign-in');
   }
-  
+
   const Transformation = transformationTypes[type as keyof typeof transformationTypes];
   const user = await getUserById(userId);
   if (!Transformation) {
@@ -31,13 +31,16 @@ export default async function AddTransformationTypePage({ params }: SearchParamP
 
 
           <Header title={Transformation.title} subtitle={Transformation.subTitle}></Header>
-          <TransformationForm 
-            action="Add"
-            userId={user._id}
-            type={Transformation.type as TransformationTypeKey}
-            creditBalance={user.creditBalance}
-           
-          />
+          <div className=  "m-10 p-4  bg-white rounded-lg shadow-md w-[600px]">
+
+            <TransformationForm
+              action="Add"
+              userId={user._id}
+              type={Transformation.type as TransformationTypeKey}
+              creditBalance={user.creditBalance}
+
+            />
+          </div>
 
 
         </div>
