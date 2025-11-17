@@ -8,7 +8,7 @@ import { Button } from "@/app/components/ui/button"
 import { CustomInput } from './customInput'
 import { aspectRatioOptions, transformationTypes } from '@/constants'
 import { deepMergeObjects, debounce } from '@/lib/utils'
-import MediaUploader from '@/app/components/shared/mediaUploader'
+
 
 import {
     Form,
@@ -30,6 +30,7 @@ import { Input } from "@/app/components/ui/input"
 import { defaultValues } from '@/constants'
 import { AspectRatioKey } from '@/lib/utils'
 import { div } from 'framer-motion/client'
+import MediaUploader from './MediaUploader'
 
 export const formSchema = z.object({
     title: z.string(),
