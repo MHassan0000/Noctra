@@ -5,7 +5,7 @@ import { CldUploadWidget } from "next-cloudinary"
 import Image from "next/image";
 import { CldImage } from "next-cloudinary";
 import { dataUrl ,getImageSize} from '@/lib/utils';
-import { data } from 'framer-motion/client';
+
 
 
 type MediaUploaderProps = {
@@ -78,7 +78,7 @@ const MediaUploader = ({
                   src={publicId}
                   alt="image"
                   sizes={"(max-width: 767px) 100vw, 50vw"}
-                  placeholder={dataUrl}
+                  placeholder={dataUrl as any}
                   className="media-uploader_cldImage"
                 />
               </div>
