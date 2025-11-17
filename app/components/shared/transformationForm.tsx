@@ -115,23 +115,26 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <CustomInput control={form.control} render={({ field }) => <Input {...field} />} name="title" formLabel="Image Title" className="w-full" />
                 {type == 'fill' && (
-                    <CustomInput control={form.control} name="aspectRatio" formLabel="Aspect Ratio" className="w-full"
-                        render={({ field }) => (
-                            <Select onValueChange={(value) => onSelectFieldHandler(value, field)}>
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Select Size" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {Object.keys(aspectRatioOptions).map((key) => (
-                                        <SelectItem key={key} value={key} className='py-3 cursor-pointer hover:bg-purple-100'>
-                                            {aspectRatioOptions[key as AspectRatioKey].label}
-                                        </SelectItem>
+                    <div className='flex flex-col gap-5 lg:flex-row lg:gap-10'>
 
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        )}
-                    />
+                        <CustomInput control={form.control} name="aspectRatio" formLabel="Aspect Ratio" className="w-full"
+                            render={({ field }) => (
+                                <Select onValueChange={(value) => onSelectFieldHandler(value, field)}>
+                                    <SelectTrigger className="w-[150px]">
+                                        <SelectValue placeholder="Select Size" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {Object.keys(aspectRatioOptions).map((key) => (
+                                            <SelectItem key={key} value={key} className='py-3 cursor-pointer hover:bg-purple-100'>
+                                                {aspectRatioOptions[key as AspectRatioKey].label}
+                                            </SelectItem>
+
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
+                    </div>
                 )}
                 {(type === 'remove' || type === 'recolor') && (
                     <div className="flex flex-col gap-5 lg:flex-row lg:gap-10">
