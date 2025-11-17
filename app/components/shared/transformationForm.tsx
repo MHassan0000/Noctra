@@ -8,7 +8,7 @@ import { Button } from "@/app/components/ui/button"
 import { CustomInput } from './customInput'
 import { aspectRatioOptions, transformationTypes } from '@/constants'
 import { deepMergeObjects, debounce } from '@/lib/utils'
-
+import MediaUploader from '@/app/components/shared/mediaUploader'
 
 import {
     Form,
@@ -183,7 +183,11 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                         className="flex size-full flex-col"
                         render={({ field }) => (
                             <MediaUploader
-                                
+                                onValueChange={field.onChange}
+                                setImage={setImage}
+                                publicId={field.value}
+                                image={Image}
+                                type={type}
                             />
                         )}
                     />
