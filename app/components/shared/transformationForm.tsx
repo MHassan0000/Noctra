@@ -195,7 +195,13 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                         )}
                     />
                     <TransformedImage
-                    
+                        image={Image}
+                        type={type}
+                        title={form.getValues().title}
+                        isTransforming={isTransforming}
+                        setIsTransforming={setIsTransforming}
+                        transformationConfig={TransformationConfig}
+
                     />
                 </div>
 
