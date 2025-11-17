@@ -304,7 +304,9 @@ export async function updateCredits(userId: string, creditFee: number) {
     if (updatedUserCredits.creditBalance < 0) {
       await User.findOneAndUpdate(
         { _id: userId },
-        { $inc: { creditBalance: -creditFee }}
+        { $inc: { creditBalance: -creditFee }},
+        {new : true}
+
       );
       throw new Error("Insufficient credits");
     }
