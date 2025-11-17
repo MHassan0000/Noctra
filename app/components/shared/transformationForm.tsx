@@ -31,6 +31,7 @@ import { defaultValues } from '@/constants'
 import { AspectRatioKey } from '@/lib/utils'
 import { div } from 'framer-motion/client'
 import MediaUploader from './MediaUploader'
+import TransformedImage from './tranformedImage'
 
 export const formSchema = z.object({
     title: z.string(),
@@ -163,6 +164,7 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                                 className="w-full"
                                 render={({ field }) => (
                                     <Input
+
                                         value={field.value}
                                         className="input-field"
                                         onChange={(e) => onInputChangeHandler(
@@ -177,7 +179,7 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                         )}
                     </div>
                 )}
-                <div className="media-uploader-field">
+                <div className="grid h-fit min-h-[200px] grid-cols-1 gap-5 py-4 md:grid-cols-2">
                     <CustomInput
                         control={form.control}
                         name="publicId"
@@ -191,6 +193,9 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                                 type={type}
                             />
                         )}
+                    />
+                    <TransformedImage
+                    
                     />
                 </div>
 
