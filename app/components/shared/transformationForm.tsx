@@ -163,9 +163,9 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
     const onTransformHandler = async () => {
         setIsTransforming(true)
 
-        setTransformationConfig(
-            deepMergeObjects(NewTransformation, TransformationConfig)
-        )
+        // Use only the current transformation config so different tools
+        // (restore, removeBackground, etc.) don't stack onto each other.
+        setTransformationConfig(NewTransformation)
 
         setNewTransformation(null)
 
@@ -191,7 +191,7 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
 
                         <CustomInput control={form.control} name="aspectRatio" formLabel="Aspect Ratio" className="w-full"
                             render={({ field }) => (
-                                <Select onValueChange={(value) => onSelectFieldHandler(value, field)}>
+                                <Select onValueChange={(value) => onSelectFieldHandler(value, field.onChange)}>
                                     <SelectTrigger className="w-[150px]">
                                         <SelectValue placeholder="Select Size" />
                                     </SelectTrigger>
