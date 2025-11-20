@@ -36,31 +36,37 @@ export const features = [
       title: "Image Restore",
       icon: Image,
       desc: "Revive damaged or low-quality images instantly.",
+      path: "/transformation/add/restore",
     },
     {
       title: "Generative Fill",
       icon: Sparkles,
       desc: "Use AI to fill missing areas realistically.",
+      path: "/transformation/add/fill",
     },
     {
       title: "Object Remove",
       icon: Eraser,
       desc: "Erase unwanted elements with precision.",
+      path: "/transformation/add/remove",
     },
     {
       title: "Object Recolor",
       icon: Palette,
       desc: "Change colors seamlessly with AI-driven accuracy.",
+      path: "/transformation/add/recolor",
     },
     {
       title: "Background Remove",
       icon: Eraser,
       desc: "Remove backgrounds effortlessly with AI.",
+      path: "/transformation/add/removeBackground",
     },
     {
       title: "",
       icon: Hourglass,
       desc: "Coming Soon...",
+      path: "#",
     },
   ];
 
