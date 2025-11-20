@@ -56,7 +56,7 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
             {/* MEDIA UPLOADER */}
             <div className="flex flex-col gap-3">
               <div className="group relative overflow-hidden rounded-xl border border-dashed border-purple-200/70 bg-purple-50/70 p-2 shadow-inner transition duration-200 hover:-translate-y-[2px] hover:shadow-md hover:shadow-purple-100">
-                <span className="absolute left-3 top-3 z-10 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-dark-600 shadow-sm">
+                <span className="absolute left-4 top-4 z-10 h3-bold text-dark-600 drop-shadow-sm">
                   Original
                 </span>
 
