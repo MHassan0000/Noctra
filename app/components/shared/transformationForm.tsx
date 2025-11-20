@@ -163,12 +163,11 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
     const onTransformHandler = async () => {
         setIsTransforming(true)
 
-        // Use only the current transformation config so different tools
-        // (restore, removeBackground, etc.) don't stack onto each other.
-        //  setTransformationConfig(
-        //     deepMergeObjects(NewTransformation, TransformationConfig)
-        // )
-        setTransformationConfig(NewTransformation)
+       
+         setTransformationConfig(
+            deepMergeObjects(NewTransformation, TransformationConfig)
+        )
+        
 
         setNewTransformation(null)
 
