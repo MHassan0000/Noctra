@@ -47,10 +47,10 @@ const TransformedImage = ({ image, type, title, transformationConfig,
             {image?.publicId && transformationConfig ? (
                 <div className="relative">
                     <CldImage
+                        src={image?.publicId}
                         alt={image.title}
                         width={getImageSize(type, image, "width")}
                         height={getImageSize(type, image, "height")}
-                        src={image?.publicId}
                         sizes={"(max-width: 767px) 100vw, 50vw"}
                         placeholder={dataUrl as PlaceholderValue}
                         className="h-fit min-h-72 w-full rounded-[10px] border border-dashed bg-purple-100/20 object-cover p-2"

@@ -38,7 +38,7 @@ export const InsufficientCreditsModal = () => {
           </div>
 
           <Image
-            src="/assets/images/stacked-coins.png"
+            src="/images/stacked-coins.png"
             alt="credit coins"
             width={462}
             height={122}
@@ -55,13 +55,13 @@ export const InsufficientCreditsModal = () => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel
-            className="button w-full bg-purple-100 text-dark-400"
+            className="py-4 px-6 flex-center gap-3 rounded-full p-16-semibold focus-visible:ring-offset-0 focus-visible:ring-transparent !important w-full bg-purple-100 text-dark-400"
             onClick={() => router.push("/profile")}
           >
             No, Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className="button w-full bg-purple-gradient  bg-cover"
+            className="py-4 px-6 flex-center gap-3 rounded-full p-16-semibold focus-visible:ring-offset-0 focus-visible:ring-transparent !important w-full bg-purple-gradient  bg-cover"
             onClick={() => router.push("/credits")}
           >
             Yes, Proceed
