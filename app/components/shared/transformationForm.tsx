@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useTransition } from 'react'
+import React, { useState, useTransition,useEffect } from 'react'
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -10,7 +10,7 @@ import { aspectRatioOptions, creditFee, transformationTypes } from '@/constants'
 import { deepMergeObjects, debounce } from '@/lib/utils'
 import { updateCredits } from '@/lib/actions/user.actions'
 import { getCldImageUrl } from 'next-cloudinary'
-import { addImage , updateImage } from '@/lib/actions/image.actions'
+import { addImage, updateImage } from '@/lib/actions/image.actions'
 import { useRouter } from "next/navigation"
 
 import {
@@ -34,7 +34,7 @@ import { defaultValues } from '@/constants'
 import { AspectRatioKey } from '@/lib/utils'
 import MediaUploader from './MediaUploader'
 import TransformedImage from './tranformedImage'
-
+import { InsufficientCreditsModal } from './InsufficientCreditsModel'
 export const formSchema = z.object({
     title: z.string(),
     aspectRatio: z.string().optional(),
@@ -173,13 +173,18 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
             await updateCredits(userId, creditFee)
         })
     }
-
+    useEffect(() => {
+        if (Image && (type === 'restore' || type === 'removeBackground')) {
+            setNewTransformation(TransformationType.config)
+        }
+    }, [Image, TransformationType.config, type])
 
 
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                {creditBalance < Math.abs(creditFee) && <InsufficientCreditsModal />}
                 <CustomInput control={form.control} render={({ field }) => <Input {...field} />} name="title" formLabel="Image Title" className="w-full" />
                 {type == 'fill' && (
                     <div className='flex flex-col gap-5 lg:flex-row lg:gap-10'>
