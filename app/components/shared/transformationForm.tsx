@@ -6,8 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Button } from "@/app/components/ui/button"
 import { CustomInput } from './customInput'
-import { aspectRatioOptions, transformationTypes } from '@/constants'
+import { aspectRatioOptions, creditFee, transformationTypes } from '@/constants'
 import { deepMergeObjects, debounce } from '@/lib/utils'
+import { updateCredits } from '@/lib/actions/user.actions'
 
 
 import {
@@ -29,7 +30,6 @@ import {
 import { Input } from "@/app/components/ui/input"
 import { defaultValues } from '@/constants'
 import { AspectRatioKey } from '@/lib/utils'
-import { div } from 'framer-motion/client'
 import MediaUploader from './MediaUploader'
 import TransformedImage from './tranformedImage'
 
@@ -92,17 +92,17 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
     }
     const onTransformHandler = async () => {
         setIsTransforming(true)
-
+    
         setTransformationConfig(
-            deepMergeObjects(NewTransformation, TransformationConfig)
+          deepMergeObjects(NewTransformation, TransformationConfig)
         )
-
+    
         setNewTransformation(null)
-
-        // startTransition(async () => {
-        //     await updateCredits(userId, creditFee)transformationConfig
-        // })
-    }
+    
+        startTransition(async () => {
+          await updateCredits(userId, creditFee)
+        })
+      }
 
 
     function onSubmit(values: z.infer<typeof formSchema>) {
