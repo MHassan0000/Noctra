@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import Header from "@/app/components/shared/header";
-import TransformedImage from "@/app/components/shared/TranformedImage";
+import TransformedImage from "@/app/components/shared/TransformedImage";
 import { Button } from "@/app/components/ui/button";
 import { getImageById } from "@/lib/actions/image.actions";
 import { getImageSize } from "@/lib/utils";
