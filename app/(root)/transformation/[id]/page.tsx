@@ -19,60 +19,66 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
     <>
       <Header title={image.title} />
 
-      <main className="mx-auto mt-6 w-full max-w-5xl space-y-8 px-4 pb-10 md:px-6">
-        {/* META */}
-        <section className="flex flex-col items-center gap-3 text-center md:flex-row md:items-baseline md:justify-between md:text-left">
-          <div className="space-y-1">
-            <p className="text-xs uppercase tracking-[0.25em] text-dark-400">Transformation</p>
-            <p className="text-sm font-semibold capitalize text-purple-500">
+      <main className="mx-auto mt-10 w-full max-w-6xl space-y-10 px-4 md:px-6">
+
+        {/* META SECTION */}
+        <section className="flex flex-col gap-4 rounded-2xl bg-white/60 p-6 shadow-lg shadow-purple-100 backdrop-blur-md md:flex-row md:items-center md:justify-between">
+          <div className="space-y-1 text-center md:text-left">
+            <p className="text-xl uppercase tracking-[0.1em] text-gray-400">
+              Transformation
+            </p>
+            <p className="text-xl font-bold capitalize text-purple-600">
               {image.transformationType}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 text-xs md:justify-end">
+          <div className="flex flex-wrap items-center justify-center gap-2 md:justify-end">
             {image.prompt && (
-              <span className="rounded-full bg-dark-300/10 px-3 py-1 text-dark-500">
-                <span className="font-semibold text-dark-600">Prompt:</span> {image.prompt}
+              <span className="chip">
+                <strong>Prompt:</strong> {image.prompt}
               </span>
             )}
 
             {image.color && (
-              <span className="rounded-full bg-dark-300/10 px-3 py-1 text-dark-500">
-                <span className="font-semibold text-dark-600">Color:</span> {image.color}
+              <span className="chip">
+                <strong>Color:</strong> {image.color}
               </span>
             )}
 
             {image.aspectRatio && (
-              <span className="rounded-full bg-dark-300/10 px-3 py-1 text-dark-500">
-                <span className="font-semibold text-dark-600">Aspect Ratio:</span> {image.aspectRatio}
+              <span className="chip">
+                <strong>Aspect Ratio:</strong> {image.aspectRatio}
               </span>
             )}
           </div>
         </section>
 
-        {/* IMAGES */}
-        <section className="rounded-2xl border border-dark-400/15 bg-dark-100/30 p-4 shadow-sm shadow-purple-100/40 backdrop-blur-sm md:p-6">
-          <div className="grid h-fit min-h-[220px] grid-cols-1 gap-6 md:grid-cols-2">
-            {/* MEDIA UPLOADER */}
-            <div className="flex flex-col gap-3">
-              <div className="group relative overflow-hidden rounded-xl border border-dashed border-purple-200/70 bg-purple-50/70 p-2 shadow-inner transition duration-200 hover:-translate-y-[2px] hover:shadow-md hover:shadow-purple-100">
-                <span className="absolute left-4 top-4 z-10 h3-bold text-dark-600 drop-shadow-sm">
+        {/* IMAGE COMPARISON */}
+        <section className="rounded-3xl border border-purple-200 bg-white/70 p-6 shadow-xl shadow-purple-100 backdrop-blur-xl">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
+
+            {/* ORIGINAL IMAGE */}
+            <div className="space-y-3">
+              <div className="group relative overflow-hidden rounded-2xl border border-purple-200 bg-purple-50/60 p-3 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <p className="absolute left-4 top-4 z-10 h3-bold text-gray-700 drop-shadow-sm">
                   Original
-                </span>
+                </p>
 
                 <Image
                   src={image.secureURL}
-                  alt="image"
+                  alt="Original Image"
                   width={getImageSize(image.transformationType, image, "width")}
                   height={getImageSize(image.transformationType, image, "height")}
-                  className="h-full min-h-72 w-full rounded-[10px] object-cover transition duration-200 group-hover:scale-[1.01]"
+                  className="h-full min-h-72 w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                 />
               </div>
             </div>
 
             {/* TRANSFORMED IMAGE */}
-            <div className="flex flex-col gap-3">
-              <div className="relative rounded-xl border border-purple-200 bg-purple-50/80 p-2 shadow-inner transition duration-200 hover:-translate-y-[2px] hover:shadow-md hover:shadow-purple-100">
+            <div className="space-y-3">
+              
+
+              <div className="relative overflow-hidden rounded-2xl border border-purple-200 bg-purple-50/70 p-3 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <TransformedImage
                   image={image}
                   type={image.transformationType}
@@ -85,21 +91,27 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
             </div>
           </div>
 
+          {/* ACTIONS */}
           {userId === image.author.clerkId && (
-            <div className="mt-6 flex flex-col gap-3 border-t border-dark-400/10 pt-4 md:flex-row md:items-center md:justify-between">
-              <p className="text-xs text-dark-500">You can update or delete this transformation from your library.</p>
+            <div className="mt-10 flex flex-col gap-4 border-t border-gray-200 pt-6 md:flex-row md:items-center md:justify-between">
+              <p className="text-sm text-gray-500">
+                You can update or delete this transformation from your library.
+              </p>
 
-              <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
-                <Button
-                  asChild
+              <div className="flex w-full flex-col gap-4 md:w-auto md:flex-row">
+
+                {/* UPDATE BUTTON */}
+                <button
+                 
                   type="button"
-                  className="bg-purple-gradient bg-cover rounded-full py-3 px-6 p-16-semibold h-[46px] w-full text-sm md:h-[48px] md:w-auto capitalize transition hover:brightness-110"
+                  className="gradient-btn w-full px-6 py-4 text-sm font-bold md:w-auto"
                 >
                   <Link href={`/transformations/${image._id}/update`}>
                     Update Image
                   </Link>
-                </Button>
+                </button>
 
+                {/* DELETE BUTTON */}
                 <div className="w-full md:w-auto">
                   <DeleteConfirmation imageId={image._id} />
                 </div>
@@ -108,6 +120,30 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
           )}
         </section>
       </main>
+
+      {/* EXTRA GLOBAL STYLES FOR CHIPS + BUTTONS */}
+      <style>{`
+        .chip {
+          background: rgba(139, 92, 246, 0.08);
+          border: 1px solid rgba(139, 92, 246, 0.2);
+          padding: 6px 12px;
+          border-radius: 999px;
+          font-size: 12px;
+          color: #6b6b6b;
+        }
+
+        .gradient-btn {
+          background: linear-gradient(135deg, #a855f7, #7c3aed);
+          color: white;
+          border-radius: 999px;
+          transition: all .25s ease;
+        }
+
+        .gradient-btn:hover {
+          filter: brightness(1.1);
+          transform: translateY(-1px);
+        }
+      `}</style>
     </>
   );
 };

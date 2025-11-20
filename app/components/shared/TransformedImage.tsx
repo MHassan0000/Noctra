@@ -38,7 +38,7 @@ const TransformedImage = ({ image, type, title, transformationConfig,
                             alt="Download"
                             width={24}
                             height={24}
-                            className="pb-1.5"
+                            className="pb-1.5 hover:scale-110"
                         />
                     </button>
                 )}
