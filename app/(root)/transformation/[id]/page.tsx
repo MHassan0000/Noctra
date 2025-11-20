@@ -24,7 +24,7 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
         {/* META SECTION */}
         <section className="flex flex-col gap-4 rounded-2xl bg-white/60 p-6 shadow-lg shadow-purple-100 backdrop-blur-md md:flex-row md:items-center md:justify-between">
           <div className="space-y-1 text-center md:text-left">
-            <p className="text-xl uppercase tracking-[0.1em] text-gray-400">
+            <p className="text-xl uppercase tracking-widest text-gray-400">
               Transformation
             </p>
             <p className="text-xl font-bold capitalize text-purple-600">
