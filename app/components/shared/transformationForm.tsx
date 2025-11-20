@@ -9,7 +9,9 @@ import { CustomInput } from './customInput'
 import { aspectRatioOptions, creditFee, transformationTypes } from '@/constants'
 import { deepMergeObjects, debounce } from '@/lib/utils'
 import { updateCredits } from '@/lib/actions/user.actions'
-
+import { getCldImageUrl } from 'next-cloudinary'
+import { addImage , updateImage } from '@/lib/actions/image.actions'
+import { useRouter } from "next/navigation"
 
 import {
     Form,
@@ -62,6 +64,74 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
         defaultValues: initialValues,
 
     })
+    const router = useRouter()
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        setisSubmitting(true);
+
+        if (data || Image) {
+            const transformationUrl = getCldImageUrl({
+                width: Image?.width,
+                height: Image?.height,
+                src: Image?.publicId,
+                ...TransformationConfig
+            })
+
+            const imageData = {
+                title: values.title,
+                publicId: Image?.publicId,
+                transformationType: type,
+                width: Image?.width,
+                height: Image?.height,
+                config: TransformationConfig,
+                secureURL: Image?.secureURL,
+                transformationURL: transformationUrl,
+                aspectRatio: values.aspectRatio,
+                prompt: values.prompt,
+                color: values.color,
+            }
+
+            if (action === 'Add') {
+                try {
+                    const newImage = await addImage({
+                        image: imageData,
+                        userId,
+                        path: '/'
+                    })
+
+                    if (newImage) {
+                        form.reset()
+                        setImage(data)
+                        router.push(`/transformations/${newImage._id}`)
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+            if (action === 'Update') {
+                try {
+                    const updatedImage = await updateImage({
+                        image: {
+                            ...imageData,
+                            _id: data._id
+                        },
+                        userId,
+                        path: `/transformations/${data._id}`
+                    })
+
+                    if (updatedImage) {
+                        router.push(`/transformations/${updatedImage._id}`)
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }
+
+        setisSubmitting(false)
+    }
+
     const onSelectFieldHandler = (value: string, onChangeField: (value: string) => void) => {
         const imageSize = aspectRatioOptions[value as AspectRatioKey]
 
@@ -92,23 +162,20 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
     }
     const onTransformHandler = async () => {
         setIsTransforming(true)
-    
+
         setTransformationConfig(
-          deepMergeObjects(NewTransformation, TransformationConfig)
+            deepMergeObjects(NewTransformation, TransformationConfig)
         )
-    
+
         setNewTransformation(null)
-    
+
         startTransition(async () => {
-          await updateCredits(userId, creditFee)
+            await updateCredits(userId, creditFee)
         })
-      }
-
-
-    function onSubmit(values: z.infer<typeof formSchema>) {
-
-        console.log(values)
     }
+
+
+
 
     return (
         <Form {...form}>
