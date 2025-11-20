@@ -33,7 +33,7 @@ import { Input } from "@/app/components/ui/input"
 import { defaultValues } from '@/constants'
 import { AspectRatioKey } from '@/lib/utils'
 import MediaUploader from './MediaUploader'
-import TransformedImage from './tranformedImage'
+import TransformedImage from './TranformedImage'
 import { InsufficientCreditsModal } from './InsufficientCreditsModel'
 export const formSchema = z.object({
     title: z.string(),

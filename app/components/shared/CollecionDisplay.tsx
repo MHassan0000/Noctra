@@ -37,7 +37,7 @@ export const CollectionDisplay = ({
   return (
     <section className="container flex flex-col justify-center items-center mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-12 text-center">
-        <h2 className="text-5xl font-bold text-gray-900 dark:text-white sm:text-4xl">
+        <h2 className="text-6xl font-extrabold text-gray-900 dark:text-white sm:text-4xl">
           Recent Edits
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-gray-300">
@@ -107,10 +107,12 @@ export const CollectionDisplay = ({
             </svg>
           </div>
           <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            No images found
+            {searchParams.get("query") ? "No results found" : "No images found"}
           </h3>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Your collection is empty. Start by uploading your first image.
+            {searchParams.get("query")
+              ? "No images match your search. Try a different term."
+              : "Your collection is empty. Start by uploading your first image."}
           </p>
         </div>
       )}
