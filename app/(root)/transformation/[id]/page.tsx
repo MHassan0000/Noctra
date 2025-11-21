@@ -59,10 +59,17 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
 
             {/* ORIGINAL IMAGE */}
             <div className="space-y-3">
-              <div className="group relative overflow-hidden rounded-2xl border border-purple-200 bg-purple-50/60 p-3 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                <p className="absolute left-4 top-4 z-10 h3-bold text-gray-700 drop-shadow-sm">
-                  Original
-                </p>
+              <div className="group flex flex-col gap-4 relative overflow-hidden rounded-2xl border border-purple-200 bg-purple-50/60 p-3 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div className='flex-between'>
+
+                  <h3 className="h3-bold text-dark-600 ml-5">
+                    Original
+                  </h3>
+                  <div>
+
+                  </div>
+
+                </div>
 
                 <Image
                   src={image.secureURL}
@@ -76,7 +83,7 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
 
             {/* TRANSFORMED IMAGE */}
             <div className="space-y-3">
-              
+
 
               <div className="relative overflow-hidden rounded-2xl border border-purple-200 bg-purple-50/70 p-3 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <TransformedImage
@@ -102,7 +109,7 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
 
                 {/* UPDATE BUTTON */}
                 <button
-                 
+
                   type="button"
                   className="gradient-btn w-full px-6 py-4 text-sm font-bold md:w-auto"
                 >

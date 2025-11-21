@@ -22,7 +22,7 @@ export const CollectionDisplay = ({
   hasSearch?: boolean;
 }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams =  useSearchParams();
 
   const onPageChange = (action: string) => {
     const pageValue = action === "next" ? Number(page) + 1 : Number(page) - 1;

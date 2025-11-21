@@ -4,7 +4,7 @@ import { useToast } from "@/app/components/ui/use-toast"
 import { CldUploadWidget } from "next-cloudinary"
 import Image from "next/image";
 import { CldImage } from "next-cloudinary";
-import { dataUrl ,getImageSize} from '@/lib/utils';
+import { dataUrl, getImageSize } from '@/lib/utils';
 
 
 
@@ -65,10 +65,16 @@ const MediaUploader = ({
     >
       {({ open }) => (
         <div className="flex flex-col gap-4">
-          <h3 className="h3-bold text-dark-600 ml-5">
-            Original
-          </h3>
+          <div className='flex-between'>
 
+            <h3 className="h3-bold text-dark-600 ml-5">
+              Original
+            </h3>
+            <div>
+
+            </div>
+
+          </div>
           {publicId ? (
             <>
               <div className="cursor-pointer overflow-hidden rounded-[10px]">

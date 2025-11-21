@@ -53,7 +53,7 @@ const TransformedImage = ({ image, type, title, transformationConfig,
                         height={getImageSize(type, image, "height")}
                         sizes={"(max-width: 767px) 100vw, 50vw"}
                         placeholder={dataUrl as PlaceholderValue}
-                        className="h-fit min-h-72 w-full rounded-[10px] border border-dashed bg-purple-100/20 object-cover p-2"
+                        className="h-full min-h-72 w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                         onLoad={() => {
                             setIsTransforming && setIsTransforming(false);
                         }}
