@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import Link from "next/link"
 import { navigationLinks } from "../../../constants/index"
 import Image from "next/image"
-import { Home, Layers, DollarSign, BookOpen, Image as ImageIcon, Sparkles, Scissors,Eraser, Repeat, Menu, X, Mail } from "lucide-react"
+import { Home, Layers, DollarSign, BookOpen, Image as ImageIcon, Sparkles, Scissors, Eraser, Repeat, Menu, X, Mail } from "lucide-react"
 import { useUser, UserButton, SignInButton } from "@clerk/nextjs"
 
 interface NavLink {
@@ -14,12 +14,11 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { label: "Home", href: "/", Icon: Home },
-  { label: "Contact", href: "/contact", Icon: Mail },
   { label: "About", href: "/about", Icon: BookOpen },
 ]
 
 export default function Sidebar() {
-  const { user , isSignedIn } = useUser()
+  const { user, isSignedIn } = useUser()
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -76,11 +75,11 @@ export default function Sidebar() {
             <div className="mt-auto flex flex-col gap-3">
               {isSignedIn ? (
                 <div className="w-full flex items-center gap-2">
-                  <UserButton appearance={{elements:{userButtonAvatarBox:{width:36,height:36}}}}/>
+                  <UserButton appearance={{ elements: { userButtonAvatarBox: { width: 36, height: 36 } } }} />
                   <span className="text-sm font-medium">{user?.firstName + " " + user?.lastName}</span>
                 </div>
               ) : (
-                <div className="w-full inline-flex items-center gap-2 justify-center bg-linear-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-md text-sm font-semibold"><SignInButton/></div>
+                <div className="w-full inline-flex items-center gap-2 justify-center bg-linear-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-md text-sm font-semibold"><SignInButton /></div>
               )}
 
               <Link href="/credits" onClick={() => setIsOpen(false)} className="w-full inline-flex items-center gap-2 justify-center bg-linear-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-md text-sm font-semibold">Get Credits</Link>
@@ -105,10 +104,10 @@ export default function Sidebar() {
 
         {/* Tool icons - desktop only visible when signed in */}
         {isSignedIn && (
-          <div className="flex flex-col items-center gap-3 mt-3">
+          <div className="flex flex-col items-center gap-3 mt-2">
             {navigationLinks.map((t) => {
               const key = t.label.toLowerCase()
-              
+
               let IconComp: any = ImageIcon
               if (key.includes("fill")) IconComp = Sparkles
               else if (key.includes("remove background") || key.includes("background")) IconComp = Eraser
@@ -126,27 +125,44 @@ export default function Sidebar() {
 
         <div className="mt-auto mb-5 ">
           {isSignedIn ? (
-            <div className="flex flex-col items-center gap-5 w-full">
-            <div className="w-full flex items-center justify-center">
-              <UserButton appearance={{elements:{userButtonAvatarBox:{width:34,height:34}}}}/>
+            <div className="flex flex-col items-center gap-3 w-full">
+              
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-3 px-1 py-1 rounded-full bg-linear-to-r from-purple-500 to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                >
+                  <div className="p-1.5  rounded-full">
+                    <Image
+                      src="/icons/user.svg"
+                      alt="Profile"
+                      width={20}
+                      height={20}
+                      className="text-white"
+                    />
+                  </div>
+                  
+                </Link>
+              
+              <div className="w-full flex items-center justify-center">
+                <UserButton appearance={{ elements: { userButtonAvatarBox: { width: 34, height: 34 } } }} />
+              </div>
+              <div className="w-full flex items-center justify-center">
+                <Link href="/credits" aria-label="Get Credits" className="w-9 h-9 rounded-full bg-linear-to-r from-indigo-500 to-purple-500 text-white flex items-center justify-center shadow-md hover:scale-105 transition">
+                  <DollarSign className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
-            <div className="w-full flex items-center justify-center">
-            <Link href="/credits" aria-label="Get Credits" className="w-9 h-9 rounded-full bg-linear-to-r from-indigo-500 to-purple-500 text-white flex items-center justify-center shadow-md hover:scale-105 transition">
-              <DollarSign className="w-4 h-4" />
-            </Link>
-          </div>
-            </div>
-            
+
           ) : (
-            <div  className="text-xs font-bold rounded-xl shadow-md hover:scale-105 transition bg-linear-to-r from-indigo-500 to-purple-500 text-white text-center px-2 py-2"><SignInButton/></div>
+            <div className="text-xs font-bold rounded-xl shadow-md hover:scale-105 transition bg-linear-to-r from-indigo-500 to-purple-500 text-white text-center px-2 py-2"><SignInButton /></div>
           )}
 
-          
+
         </div>
       </aside>
 
-    
-      
+
+
     </>
   )
 }
