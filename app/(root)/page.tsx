@@ -25,9 +25,9 @@ export default async function HomePage({ searchParams }: SearchParamProps) {
                 <div className="w-full max-w-7xl mx-auto">
                   <CollectionDisplay 
                     hasSearch={true}
-                    images={images?.data}
-                    totalPages={images?.totalPage}
-                    page={page}
+                    initialImages={images?.data}
+                    initialTotalPages={images?.totalPage}
+                    initialPage={page}
                   />
                 </div>
               </div>

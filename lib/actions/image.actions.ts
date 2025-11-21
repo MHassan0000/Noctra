@@ -100,33 +100,16 @@ export async function getAllImages({ limit = 9, page = 1, searchQuery = '' }: {
   try {
     await connectToDatabase();
 
-    cloudinary.config({
-      cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-      secure: true,
-    })
-
-    let expression = 'folder=noctra';
-
-    if (searchQuery) {
-      expression += ` AND ${searchQuery}`
-    }
-
-    const { resources } = await cloudinary.search
-      .expression(expression)
-      .execute();
-
-    const resourceIds = resources.map((resource: any) => resource.public_id);
-
     let query = {};
 
-    if(searchQuery) {
+    // Search by title if searchQuery is provided
+    if (searchQuery && searchQuery.trim()) {
       query = {
-        publicId: {
-          $in: resourceIds
+        title: {
+          $regex: searchQuery.trim(),
+          $options: 'i' // case-insensitive
         }
-      }
+      };
     }
 
     const skipAmount = (Number(page) -1) * limit;

@@ -3,26 +3,67 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState, useRef } from "react";
 import { CldImage } from "next-cloudinary";
 import { transformationTypes } from "@/constants";
 import { IImage } from "@/lib/database/models/image.model";
 import { formUrlQuery } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Search } from "./Search";
+import { getAllImages } from "@/lib/actions/image.actions";
 
 export const CollectionDisplay = ({
   hasSearch = false,
-  images,
-  totalPages = 1,
-  page,
+  initialImages,
+  initialTotalPages = 1,
+  initialPage,
 }: {
-  images: IImage[];
-  totalPages?: number;
-  page: number;
+  initialImages: IImage[];
+  initialTotalPages?: number;
+  initialPage: number;
   hasSearch?: boolean;
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [images, setImages] = useState<IImage[]>(initialImages || []);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [page, setPage] = useState(initialPage);
+  const [isLoading, setIsLoading] = useState(false);
+  const prevParamsRef = useRef<string>(searchParams.toString());
+
+  // Fetch images when searchParams change
+  useEffect(() => {
+    const currentParams = searchParams.toString();
+    const currentPage = Number(searchParams.get("page")) || 1;
+    const searchQuery = searchParams.get("query") || "";
+    
+    // Only fetch if params actually changed
+    if (currentParams !== prevParamsRef.current) {
+      prevParamsRef.current = currentParams;
+      
+      const fetchImages = async () => {
+        setIsLoading(true);
+        try {
+          const result = await getAllImages({ 
+            page: currentPage, 
+            searchQuery 
+          });
+          
+          if (result) {
+            setImages(result.data || []);
+            setTotalPages(result.totalPage || 1);
+            setPage(currentPage);
+          }
+        } catch (error) {
+          console.error("Error fetching images:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchImages();
+    }
+  }, [searchParams]);
 
   const onPageChange = (action: string) => {
     const pageValue = action === "next" ? Number(page) + 1 : Number(page) - 1;
@@ -51,7 +92,11 @@ export const CollectionDisplay = ({
         </div>
       )}
 
-      {images.length > 0 ? (
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-gray-600 dark:text-gray-300">Loading...</div>
+        </div>
+      ) : images.length > 0 ? (
         <div className="space-y-8">
           <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {images.map((image) => (
