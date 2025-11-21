@@ -79,13 +79,13 @@ const MediaUploader = ({
                   alt="image"
                   sizes={"(max-width: 767px) 100vw, 50vw"}
                   placeholder={dataUrl as any}
-                  className="media-uploader_cldImage"
+                  className="h-fit min-h-72 w-full rounded-[10px] border border-dashed bg-purple-100/20 object-cover p-2"
                 />
               </div>
             </>
           ) : (
-            <div className="media-uploader_cta" onClick={() => open()}>
-              <div className="media-uploader_cta-image">
+            <div className="flex-center flex h-72 cursor-pointer flex-col gap-5 rounded-2xl border border-dashed bg-purple-100/20 shadow-inner" onClick={() => open()}>
+              <div className="rounded-2xl bg-white  p-5 shadow-sm shadow-purple-200/50">
                 <Image
                   src="/icons/add.svg"
                   alt="Add Image"

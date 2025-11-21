@@ -19,7 +19,7 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
     <>
       <Header title={image.title} />
 
-      <main className="mx-auto mt-10 w-full max-w-6xl space-y-10 px-4 md:px-6">
+      <main className="m-5 mx-auto p-4 mt-10  bg-white rounded-lg shadow-md xm:w-[300px] sm:w-[400px] md:w-[1000px]">
 
         {/* META SECTION */}
         <section className="flex flex-col gap-4 rounded-2xl bg-white/60 p-6 shadow-lg shadow-purple-100 backdrop-blur-md md:flex-row md:items-center md:justify-between">
@@ -106,7 +106,7 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
                   type="button"
                   className="gradient-btn w-full px-6 py-4 text-sm font-bold md:w-auto"
                 >
-                  <Link href={`/transformations/${image._id}/update`}>
+                  <Link href={`/transformation/${image._id}/update`}>
                     Update Image
                   </Link>
                 </button>

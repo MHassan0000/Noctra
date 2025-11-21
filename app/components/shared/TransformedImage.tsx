@@ -66,7 +66,7 @@ const TransformedImage = ({ image, type, title, transformationConfig,
                     />
 
                     {isTransforming && (
-                        <div className="flex-center absolute left-[50%] top-[50%] size-full -translate-x-1/2 -translate-y-1/2 flex-col gap-2 rounded-[10px] border bg-dark-700/90">
+                        <div className="flex-center absolute left-[50%] top-[50%] size-full -translate-x-1/2 -translate-y-1/2 flex-col gap-2 rounded-[10px] border bg-gray-500">
                             <Image
                                 src="/icons/spinner.svg"
                                 width={50}
