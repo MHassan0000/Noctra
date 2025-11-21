@@ -19,7 +19,7 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
     <>
       <Header title={image.title} />
 
-      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 bg-white rounded-lg shadow-sm sm:shadow-md">
+      <main className="w-full max-w-full mx-auto px-4 sm:px-6 py-6 sm:py-10 bg-white rounded-lg shadow-sm sm:shadow-md overflow-x-hidden mt-10">
 
         {/* META SECTION */}
         <section className="flex flex-col gap-4 rounded-2xl bg-white/60 p-4 sm:p-6 shadow-md sm:shadow-lg shadow-purple-100 backdrop-blur-sm sm:backdrop-blur-md md:flex-row md:items-center md:justify-between mx-auto w-full">
@@ -62,7 +62,7 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
               <div className="group flex flex-col gap-3 sm:gap-4 relative overflow-hidden rounded-xl sm:rounded-2xl border border-purple-100 sm:border-purple-200 bg-purple-50/60 p-3 sm:p-4 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg mx-auto w-full">
                 <div className='flex-between'>
 
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-800 sm:ml-3">
+                  <h3 className="text-lg sm:text-3xl font-bold text-black sm:ml-3">
                     Original
                   </h3>
                   <div>
