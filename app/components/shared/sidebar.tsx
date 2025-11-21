@@ -30,7 +30,7 @@ export default function Sidebar() {
 
       {/* Mobile slide-over drawer */}
       {isOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex text-black">
+        <div className="lg:hidden fixed inset-0 z-50 flex text-black h-screen">
           <div className="absolute inset-0 bg-black/40" onClick={() => setIsOpen(false)} />
           <div className="relative w-64 max-w-full h-full bg-white/95 backdrop-blur-sm border-r border-purple-50 shadow-xl p-4 flex flex-col">
             <div className="flex items-center justify-between">
