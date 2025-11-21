@@ -22,7 +22,7 @@ export const CollectionDisplay = ({
   hasSearch?: boolean;
 }) => {
   const router = useRouter();
-  const searchParams =  useSearchParams();
+  const searchParams = useSearchParams();
 
   const onPageChange = (action: string) => {
     const pageValue = action === "next" ? Number(page) + 1 : Number(page) - 1;
@@ -71,11 +71,11 @@ export const CollectionDisplay = ({
                 >
                   &larr;
                 </Button>
-                
+
                 <span className="mx-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   Page {page} of {totalPages}
                 </span>
-                
+
                 <Button
                   variant="ghost"
                   size="sm"
@@ -122,7 +122,7 @@ export const CollectionDisplay = ({
 
 const Card = ({ image }: { image: IImage }) => {
   const transformation = transformationTypes[image.transformationType as TransformationTypeKey];
-  
+
   return (
     <li className="group overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg dark:bg-gray-800">
       <Link
@@ -130,14 +130,25 @@ const Card = ({ image }: { image: IImage }) => {
         className="block h-full"
       >
         <div className="relative aspect-square overflow-hidden">
-          <CldImage
-            src={image.publicId}
-            alt={image.title}
-            width={400}
-            height={400}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
+          {image.transformationUrl ? (
+            // Use the transformed image URL if available
+            <img
+              src={image.transformationUrl}
+              alt={image.title}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            // Fallback to CldImage with transformation if transformationURL is not available
+            <CldImage
+              src={image.publicId}
+              alt={image.title}
+              width={400}
+              height={400}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              {...(image.config || {})}
+            />
+          )}
           <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
             <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
               <h3 className="truncate font-medium">{image.title}</h3>
