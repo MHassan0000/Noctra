@@ -1,9 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-
 import { CollectionDisplay } from "@/app/components/shared/CollecionDisplay";
-import { Header } from "@/app/components/shared/header";
+import Header from "@/app/components/shared/header";
 import { getUserImages } from "@/lib/actions/image.actions";
 import { getUserById } from "@/lib/actions/user.actions";
 

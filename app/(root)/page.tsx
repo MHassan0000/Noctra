@@ -16,7 +16,7 @@ export default async function HomePage({ searchParams }: SearchParamProps) {
         <div className='rounded-full'>
           <Sidebar />
         </div>
-        <div className='flex flex-col justify-center items-center overflow-y-auto'>
+        <div className='flex flex-col justify-center items-center overflow-y-auto '>
 
           <Hero />
           <CollectionDisplay 

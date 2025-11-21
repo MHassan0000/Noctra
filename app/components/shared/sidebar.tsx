@@ -129,7 +129,7 @@ export default function Sidebar() {
               
                 <Link
                   href="/profile"
-                  className="flex items-center gap-3 px-1 py-1 rounded-full bg-linear-to-r from-purple-500 to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                  className="flex items-center gap-3 px-0.5 py-0.5 rounded-full bg-linear-to-r from-purple-500 to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
                 >
                   <div className="p-1.5  rounded-full">
                     <Image
@@ -137,19 +137,19 @@ export default function Sidebar() {
                       alt="Profile"
                       width={20}
                       height={20}
-                      className="text-white"
+                      className="text-white filter invert"
                     />
                   </div>
                   
                 </Link>
               
               <div className="w-full flex items-center justify-center">
-                <UserButton appearance={{ elements: { userButtonAvatarBox: { width: 34, height: 34 } } }} />
-              </div>
-              <div className="w-full flex items-center justify-center">
                 <Link href="/credits" aria-label="Get Credits" className="w-9 h-9 rounded-full bg-linear-to-r from-indigo-500 to-purple-500 text-white flex items-center justify-center shadow-md hover:scale-105 transition">
                   <DollarSign className="w-4 h-4" />
                 </Link>
+              </div>
+              <div className="w-full flex items-center justify-center">
+                <UserButton appearance={{ elements: { userButtonAvatarBox: { width: 34, height: 34 } } }} />
               </div>
             </div>
 
