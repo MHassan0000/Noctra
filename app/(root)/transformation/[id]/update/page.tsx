@@ -23,15 +23,17 @@ const Page = async ({ params }: SearchParamProps) => {
     <>
       <Header title={transformation.title} subtitle={transformation.subTitle} />
 
-      <section className="mt-10 m-5 mx-auto p-4  bg-white rounded-lg shadow-md xm:w-[300px] sm:w-[400px] md:w-[1000px]">
-        <TransformationForm
-          action="Update"
-          userId={user._id}
-          type={image.transformationType as TransformationTypeKey}
-          creditBalance={user.creditBalance}
-          config={image.config}
-          data={image}
-        />
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 bg-white rounded-lg shadow-sm sm:shadow-md">
+        <div className="w-full max-w-4xl mx-auto">
+          <TransformationForm
+            action="Update"
+            userId={user._id}
+            type={image.transformationType as TransformationTypeKey}
+            creditBalance={user.creditBalance}
+            config={image.config}
+            data={image}
+          />
+        </div>
       </section>
     </>
   );

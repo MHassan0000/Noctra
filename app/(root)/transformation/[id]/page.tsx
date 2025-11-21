@@ -19,10 +19,10 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
     <>
       <Header title={image.title} />
 
-      <main className="m-5 mx-auto p-4 mt-10  bg-white rounded-lg shadow-md xm:w-[300px] sm:w-[400px] md:w-[1000px]">
+      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 bg-white rounded-lg shadow-sm sm:shadow-md">
 
         {/* META SECTION */}
-        <section className="flex flex-col gap-4 rounded-2xl bg-white/60 p-6 shadow-lg shadow-purple-100 backdrop-blur-md md:flex-row md:items-center md:justify-between">
+        <section className="flex flex-col gap-4 rounded-2xl bg-white/60 p-4 sm:p-6 shadow-md sm:shadow-lg shadow-purple-100 backdrop-blur-sm sm:backdrop-blur-md md:flex-row md:items-center md:justify-between mx-auto w-full">
           <div className="space-y-1 text-center md:text-left">
             <p className="text-xl uppercase tracking-widest text-gray-400">
               Transformation
@@ -32,7 +32,7 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-2 md:justify-end">
+          <div className="flex flex-wrap items-center justify-center gap-2 md:justify-end mt-2 sm:mt-0">
             {image.prompt && (
               <span className="chip">
                 <strong>Prompt:</strong> {image.prompt}
@@ -54,15 +54,15 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
         </section>
 
         {/* IMAGE COMPARISON */}
-        <section className="rounded-3xl border border-purple-200 bg-white/70 p-6 shadow-xl shadow-purple-100 backdrop-blur-xl">
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
+        <section className="mt-6 rounded-2xl sm:rounded-3xl border border-purple-100 sm:border-purple-200 bg-white/70 p-4 sm:p-6 shadow-sm sm:shadow-lg shadow-purple-50 sm:shadow-purple-100 backdrop-blur-sm sm:backdrop-blur-xl mx-auto w-full">
+          <div className="grid grid-cols-1 gap-6 sm:gap-8 md:gap-10 md:grid-cols-2">
 
             {/* ORIGINAL IMAGE */}
             <div className="space-y-3">
-              <div className="group flex flex-col gap-4 relative overflow-hidden rounded-2xl border border-purple-200 bg-purple-50/60 p-3 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+              <div className="group flex flex-col gap-3 sm:gap-4 relative overflow-hidden rounded-xl sm:rounded-2xl border border-purple-100 sm:border-purple-200 bg-purple-50/60 p-3 sm:p-4 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg mx-auto w-full">
                 <div className='flex-between'>
 
-                  <h3 className="h3-bold text-dark-600 ml-5">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-800 sm:ml-3">
                     Original
                   </h3>
                   <div>
@@ -76,7 +76,7 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
                   alt="Original Image"
                   width={getImageSize(image.transformationType, image, "width")}
                   height={getImageSize(image.transformationType, image, "height")}
-                  className="h-full min-h-72 w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                  className="h-full min-h-60 sm:min-h-72 w-full rounded-lg sm:rounded-xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                 />
               </div>
             </div>
@@ -85,7 +85,7 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
             <div className="space-y-3">
 
 
-              <div className="relative overflow-hidden rounded-2xl border border-purple-200 bg-purple-50/70 p-3 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+              <div className="relative overflow-hidden rounded-xl sm:rounded-2xl border border-purple-100 sm:border-purple-200 bg-purple-50/70 p-3 sm:p-4 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg mx-auto w-full">
                 <TransformedImage
                   image={image}
                   type={image.transformationType}
@@ -100,8 +100,8 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
 
           {/* ACTIONS */}
           {userId === image.author.clerkId && (
-            <div className="mt-10 flex flex-col gap-4 border-t border-gray-200 pt-6 md:flex-row md:items-center md:justify-between">
-              <p className="text-sm text-gray-500">
+            <div className="mt-8 sm:mt-10 flex flex-col gap-4 border-t border-gray-100 sm:border-gray-200 pt-4 sm:pt-6 md:flex-row md:items-center md:justify-between mx-auto w-full">
+              <p className="text-xs sm:text-sm text-gray-500 text-center md:text-left">
                 You can update or delete this transformation from your library.
               </p>
 
@@ -109,9 +109,8 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
 
                 {/* UPDATE BUTTON */}
                 <button
-
                   type="button"
-                  className="gradient-btn w-full px-6 py-4 text-sm font-bold md:w-auto"
+                  className="gradient-btn w-full px-4 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-bold md:w-auto"
                 >
                   <Link href={`/transformation/${image._id}/update`}>
                     Update Image
