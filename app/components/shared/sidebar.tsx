@@ -82,7 +82,27 @@ export default function Sidebar() {
                 <div className="w-full inline-flex items-center gap-2 justify-center bg-linear-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-md text-sm font-semibold"><SignInButton /></div>
               )}
 
-              <Link href="/credits" onClick={() => setIsOpen(false)} className="w-full inline-flex items-center gap-2 justify-center bg-linear-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-md text-sm font-semibold">Get Credits</Link>
+              {isSignedIn && (
+                <Link 
+                  href="/profile" 
+                  onClick={() => setIsOpen(false)} 
+                  className="w-full inline-flex items-center justify-center gap-2 bg-white text-purple-600 border border-purple-100 py-2 px-4 rounded-md text-sm font-medium hover:bg-purple-50 transition-colors"
+                >
+                  <Image
+                    src="/icons/user.svg"
+                    alt="Profile"
+                    width={16}
+                    height={16}
+                    className="text-purple-600"
+                  />
+                  My Profile
+                </Link>
+              )}
+
+              <Link href="/credits" onClick={() => setIsOpen(false)} className="w-full inline-flex items-center justify-center gap-2 bg-linear-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-md text-sm font-semibold">
+                <DollarSign className="w-4 h-4" />
+                Get Credits
+              </Link>
             </div>
           </div>
         </div>

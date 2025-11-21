@@ -53,7 +53,7 @@ export const CollectionDisplay = ({
 
       {images.length > 0 ? (
         <div className="space-y-8">
-          <ul className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {images.map((image) => (
               <Card image={image} key={String(image._id)} />
             ))}
