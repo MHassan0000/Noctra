@@ -14,19 +14,21 @@ export default async function HomePage({ searchParams }: SearchParamProps) {
   const totalPages = images?.totalPage || 1;
   
   return (
-    <div className="min-h-screen w-full bg-white overflow-x-hidden">
-      <div className="w-full mx-auto max-w-full">
-        <div className="flex w-full">
+    <div className="min-h-screen w-full bg-white overflow-x-hidden" style={{ overflowX: 'hidden' }}>
+      <div className="w-full mx-auto max-w-full overflow-x-hidden">
+        <div className="flex w-full overflow-x-hidden">
           {/* Sidebar - Hidden on mobile, fixed on larger screens */}
           <div className="hidden md:block shrink-0">
             <Sidebar />
           </div>
           
           {/* Main Content - Centered with auto margins when sidebar is hidden */}
-          <div className="flex-1 min-w-0 w-full md:pl-20 mx-auto max-w-full overflow-x-hidden">
-            <Hero />
-            <div className="w-full px-4 sm:px-6 lg:px-8 py-8 mx-auto max-w-full">
-              <div className="w-full max-w-7xl mx-auto">
+          <div className="flex-1 min-w-0 w-full md:pl-20 mx-auto max-w-full overflow-x-hidden" style={{ overflowX: 'hidden', maxWidth: '100%' }}>
+            <div className="w-full overflow-x-hidden" style={{ overflowX: 'hidden', width: '100%' }}>
+              <Hero />
+            </div>
+            <div className="w-full px-4 sm:px-6 lg:px-8 py-8 mx-auto max-w-full overflow-x-hidden" style={{ overflowX: 'hidden' }}>
+              <div className="w-full max-w-7xl mx-auto overflow-x-hidden">
                 <Suspense fallback={
                   <div className="flex items-center justify-center py-12">
                     <div className="text-gray-600 dark:text-gray-300">Loading...</div>
