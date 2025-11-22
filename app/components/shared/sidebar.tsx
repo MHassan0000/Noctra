@@ -35,7 +35,7 @@ export default function Sidebar() {
           <div className="relative w-64 max-w-full h-full bg-white/95 backdrop-blur-sm border-r border-purple-50 shadow-xl p-4 flex flex-col">
             <div className="flex items-center justify-between">
               <Link href="/" onClick={() => setIsOpen(false)}>
-                <Image src="/images/texture.png" alt="Noctra" width={40} height={40} className="rounded-md" />
+                <Image src="/images/logo.svg" alt="Noctra" width={40} height={40} className="rounded-md" />
               </Link>
               <button aria-label="Close menu" onClick={() => setIsOpen(false)} className="p-2 rounded-md">
                 <X className="w-5 h-5 text-gray-700" />
@@ -110,7 +110,7 @@ export default function Sidebar() {
       {/* Desktop left rail */}
       <aside className="hidden lg:flex flex-col items-center gap-4 h-screen overflow-y-auto w-20 p-2 fixed left-0 top-0 bg-white/85 backdrop-blur-sm border-r border-gray-200 rounded-3xl shadow-lg z-40">
         <Link href="/" className="mt-1">
-          <Image src="/images/texture.png" alt="Noctra" width={32} height={32} className="rounded-md" />
+          <Image src="/images/logo.svg" alt="Noctra" width={32} height={32} className="rounded-md" />
         </Link>
 
         {/* Public nav links - always visible on desktop */}
