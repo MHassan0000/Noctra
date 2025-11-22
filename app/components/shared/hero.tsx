@@ -13,16 +13,17 @@ export default function Hero() {
           <div className="flex flex-col items-center gap-4 sm:gap-5 md:gap-6 w-full">
             {/* Headings */}
             <div className="text-center space-y-2 sm:space-y-3 w-full px-1">
-              <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-5xl font-bold leading-snug sm:leading-tight w-full px-2">
-                <span className="block xs:inline">Bring Your Images to Life</span>{" "}
-                <span className="bg-linear-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent whitespace-nowrap">
+              <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold leading-tight w-full px-2">
+                <span className="block">Bring Your Images to Life</span>
+                <span className="bg-linear-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent">
                   with Noctra AI
                 </span>
               </h1>
-              <p className="text-xs xs:text-sm sm:text-base text-gray-600 max-w-2xl mx-auto leading-relaxed px-2">
-                Edit, restore, and enhance your images effortlessly with powerful AI tools.
-                Noctra helps you remove objects, recolor elements, and fill gaps like magic —
-                all in one intuitive platform.
+              <p className="text-sm xs:text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed px-2 mt-2">
+                <span className="block sm:inline">Edit, restore, and enhance your images</span>
+                <span className="block sm:inline">effortlessly with powerful AI tools.</span>
+                <span className="block sm:inline">Noctra helps you remove objects, recolor elements,</span>
+                <span className="block sm:inline">and fill gaps like magic — all in one intuitive platform.</span>
               </p>
             </div>
 

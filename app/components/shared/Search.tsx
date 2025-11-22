@@ -88,16 +88,17 @@ export const Search = () => {
   }, []);
 
   return (
-    <div className="flex w-2xl rounded-2xl border-2 border-purple-200/20 bg-white px-4 shadow-sm shadow-purple-200/15 ">
+    <div className="flex w-full max-w-2xl rounded-2xl border-2 border-purple-200/20 bg-white px-3 sm:px-4 shadow-sm shadow-purple-200/15">
       <Image
         src="/icons/search.svg"
         alt="search"
-        width={24}
-        height={24}
+        width={20}
+        height={20}
+        className="w-4 h-4 sm:w-5 sm:h-5 my-auto"
       />
 
       <Input
-        className="border-0 bg-transparent text-dark-600 w-full placeholder:text-dark-400 h-[50px] p-16-medium focus-visible:ring-offset-0 p-3 focus-visible:ring-transparent !important"
+        className="border-0 bg-transparent text-dark-600 w-full placeholder:text-dark-400 h-10 sm:h-[50px] text-sm sm:text-base p-16-medium focus-visible:ring-offset-0 pl-2 sm:pl-3 focus-visible:ring-transparent !important"
         placeholder="Search"
         value={query}
         onChange={handleChange}
