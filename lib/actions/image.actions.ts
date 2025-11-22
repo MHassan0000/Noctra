@@ -128,7 +128,13 @@ export async function getAllImages({ limit = 9, page = 1, searchQuery = '' }: {
       savedImages,
     }
   } catch (error) {
-    handleError(error)
+    console.error("Error fetching images:", error);
+    // Return empty result instead of throwing during build
+    return {
+      data: [],
+      totalPage: 1,
+      savedImages: 0,
+    };
   }
 }
 
@@ -159,6 +165,11 @@ export async function getUserImages({
       totalPages: Math.ceil(totalImages / limit),
     };
   } catch (error) {
-    handleError(error);
+    console.error("Error fetching user images:", error);
+    // Return empty result instead of throwing during build
+    return {
+      data: [],
+      totalPages: 1,
+    };
   }
 }

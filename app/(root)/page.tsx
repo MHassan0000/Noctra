@@ -7,7 +7,12 @@ import { getAllImages } from "@/lib/actions/image.actions"
 export default async function HomePage({ searchParams }: SearchParamProps) {
   const page = Number(searchParams?.page) || 1;
   const searchQuery = (searchParams?.query as string) || '';
-  const images = await getAllImages({ page, searchQuery})
+  const images = await getAllImages({ page, searchQuery});
+  
+  // Ensure we always have valid data
+  const imageData = images?.data || [];
+  const totalPages = images?.totalPage || 1;
+  
   return (
     <div className="min-h-screen w-screen bg-white overflow-x-hidden">
       <div className="w-full max-w-[100vw] mx-auto">
@@ -25,8 +30,8 @@ export default async function HomePage({ searchParams }: SearchParamProps) {
                 <div className="w-full max-w-7xl mx-auto">
                   <CollectionDisplay 
                     hasSearch={true}
-                    initialImages={images?.data}
-                    initialTotalPages={images?.totalPage}
+                    initialImages={imageData}
+                    initialTotalPages={totalPages}
                     initialPage={page}
                   />
                 </div>
