@@ -32,7 +32,7 @@ export default async function AddTransformationTypePage({ params }: SearchParamP
             <div className="flex-1 min-w-0 w-full md:pl-20 mx-auto max-w-full overflow-x-hidden">
               <Header title={Transformation.title} subtitle={Transformation.subTitle}></Header>
               <section className="w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-20 py-6 sm:py-10">
-                <div className="w-full mx-auto bg-white rounded-lg shadow-lg border border-gray-200 p-4 sm:p-6 lg:p-8 xl:p-10">
+                <div className="w-full max-w-7xl mx-auto bg-white rounded-lg shadow-lg border border-gray-200 p-4 sm:p-6 lg:p-8 xl:p-10">
                   <TransformationForm
                     action="Add"
                     userId={user._id}
