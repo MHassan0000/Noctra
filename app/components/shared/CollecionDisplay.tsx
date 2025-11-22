@@ -78,7 +78,7 @@ export const CollectionDisplay = ({
   return (
     <section className="w-full max-w-full flex flex-col justify-center items-center mx-auto px-4 py-12 sm:px-6 lg:px-8 overflow-x-hidden">
       <div className="mb-8 sm:mb-10 md:mb-12 text-center w-full max-w-full">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white break-words">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white wrap-break-word">
           Recent Edits
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base text-gray-600 dark:text-gray-300 px-2">
