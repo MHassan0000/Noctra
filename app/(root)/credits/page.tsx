@@ -7,7 +7,7 @@ import Header from "@/app/components/shared/header";
 import { Button } from "@/app/components/ui/button";
 import { plans } from "@/constants";
 import { getUserById } from "@/lib/actions/user.actions";
-// import Checkout from "@/app/components/shared/Checkout";
+import Checkout from "@/app/components/shared/Checkout";
 
 const Credits = async () => {
   const { userId } = await auth();
@@ -81,18 +81,18 @@ const Credits = async () => {
                 {plan.name === "Free" ? (
                   <Button
                     variant="outline"
-                    className="w-full border-purple-500 text-purple-600 hover:bg-purple-50 dark:hover:bg-gray-800"
+                    className="w-full rounded-full border-purple-500 text-purple-600 hover:bg-purple-50 dark:hover:bg-gray-800"
                   >
                     Free Consumable
                   </Button>
                 ) : (
                   <SignedIn>
-                    {/* <Checkout
+                    <Checkout
                       plan={plan.name}
                       amount={plan.price}
                       credits={plan.credits}
                       buyerId={user._id}
-                    /> */}
+                    />
                   </SignedIn>
                 )}
               </div>

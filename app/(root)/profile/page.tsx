@@ -15,6 +15,9 @@ const Profile = async ({ searchParams }: SearchParamProps) => {
   const user = await getUserById(userId);
   const images = await getUserImages({ page, userId: user._id });
 
+  const imageData = images?.data || [];
+  const totalPages = images?.totalPages || 1;
+
   return (
     <>
       <Header
@@ -60,7 +63,7 @@ const Profile = async ({ searchParams }: SearchParamProps) => {
               className="opacity-80"
             />
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white">
-              {images?.data.length}
+              {imageData.length}
             </h2>
           </div>
         </div>
@@ -69,9 +72,9 @@ const Profile = async ({ searchParams }: SearchParamProps) => {
       {/* Collection Section */}
       <section className="mt-10">
         <CollectionDisplay
-          images={images?.data}
-          totalPages={images?.totalPages}
-          page={page}
+          initialImages={imageData}
+          initialTotalPages={totalPages}
+          initialPage={page}
         />
       </section>
     </>
