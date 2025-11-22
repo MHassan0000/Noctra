@@ -20,10 +20,15 @@ const Profile = async ({ searchParams }: SearchParamProps) => {
 
   return (
     <>
+
+      
+
       <Header
         title="Your Profile"
         subtitle="Manage your credits, track activity, and view your generated images."
-      />
+        
+        />
+      
 
       {/* Stats Section */}
       <section className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">

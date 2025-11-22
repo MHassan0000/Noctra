@@ -64,10 +64,10 @@ const MediaUploader = ({
       onError={onUploadErrorHandler}
     >
       {({ open }) => (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 w-full">
           <div className='flex-between'>
 
-            <h3 className="h3-bold text-dark-600 ml-5">
+            <h3 className="h3-bold text-dark-600 ml-2 sm:ml-5 text-base sm:text-lg md:text-xl">
               Original
             </h3>
             <div>
@@ -85,12 +85,12 @@ const MediaUploader = ({
                   alt="image"
                   sizes={"(max-width: 767px) 100vw, 50vw"}
                   placeholder={dataUrl as any}
-                  className="h-fit min-h-72 w-full rounded-[10px] border border-dashed bg-purple-100/20 object-cover p-2"
+                  className="h-fit min-h-48 sm:min-h-60 md:min-h-72 w-full rounded-[10px] border border-dashed bg-purple-100/20 object-cover p-2"
                 />
               </div>
             </>
           ) : (
-            <div className="flex-center flex h-72 cursor-pointer flex-col gap-5 rounded-2xl border border-dashed bg-purple-100/20 shadow-inner" onClick={() => open()}>
+            <div className="flex-center flex h-48 sm:h-60 md:h-72 cursor-pointer flex-col gap-4 sm:gap-5 rounded-2xl border border-dashed bg-purple-100/20 shadow-inner" onClick={() => open()}>
               <div className="rounded-2xl bg-white  p-5 shadow-sm shadow-purple-200/50">
                 <Image
                   src="/icons/add.svg"

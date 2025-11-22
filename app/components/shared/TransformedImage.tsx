@@ -22,9 +22,9 @@ const TransformedImage = ({ image, type, title, transformationConfig,
     }
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 w-full">
             <div className="flex-between">
-                <h3 className="h3-bold text-dark-600 ml-5">
+                <h3 className="h3-bold text-dark-600 ml-2 sm:ml-5 text-base sm:text-lg md:text-xl">
                     Transformed
                 </h3>
 
@@ -53,7 +53,7 @@ const TransformedImage = ({ image, type, title, transformationConfig,
                         height={getImageSize(type, image, "height")}
                         sizes={"(max-width: 767px) 100vw, 50vw"}
                         placeholder={dataUrl as PlaceholderValue}
-                        className="h-full min-h-72 w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                        className="h-full min-h-48 sm:min-h-60 md:min-h-72 w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                         onLoad={() => {
                             setIsTransforming && setIsTransforming(false);
                         }}

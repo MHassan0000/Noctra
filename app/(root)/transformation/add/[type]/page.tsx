@@ -23,28 +23,25 @@ export default async function AddTransformationTypePage({ params }: SearchParamP
 
   return (
     <>
-      <div className='flex justify-center items-center'>
-        <div className='rounded-full'>
-          <Sidebar />
-        </div>
-        <div>
-
-
-          <Header title={Transformation.title} subtitle={Transformation.subTitle}></Header>
-          <div className=  "m-5 mx-auto p-4  bg-white rounded-lg shadow-md xm:w-[300px] sm:w-[400px] md:w-[1000px]">
-
-            <TransformationForm
-              action="Add"
-              userId={user._id}
-              type={Transformation.type as TransformationTypeKey}
-              creditBalance={user.creditBalance}
-
-            />
+      <div className="min-h-screen w-full bg-white overflow-x-hidden">
+        <div className="w-full mx-auto max-w-full">
+          <div className="flex w-full">
+            <div className="hidden md:block shrink-0">
+              <Sidebar />
+            </div>
+            <div className="flex-1 min-w-0 w-full md:pl-20 mx-auto max-w-full overflow-x-hidden">
+              <Header title={Transformation.title} subtitle={Transformation.subTitle}></Header>
+              <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 bg-white rounded-lg shadow-md">
+                <TransformationForm
+                  action="Add"
+                  userId={user._id}
+                  type={Transformation.type as TransformationTypeKey}
+                  creditBalance={user.creditBalance}
+                />
+              </div>
+            </div>
           </div>
-
-
         </div>
-
       </div>
     </>
   )

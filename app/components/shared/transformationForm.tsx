@@ -256,7 +256,7 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                         )}
                     </div>
                 )}
-                <div className="grid h-fit min-h-[200px] grid-cols-1 gap-5 py-4 md:grid-cols-2">
+                <div className="grid h-fit min-h-[200px] grid-cols-1 gap-4 sm:gap-5 py-4 md:grid-cols-2">
                     <CustomInput
                         control={form.control}
                         name="publicId"
@@ -283,10 +283,10 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                 </div>
 
 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3 sm:gap-4 w-full">
                     <Button
                         type="button"
-                        className="submit-button capitalize"
+                        className="submit-button capitalize w-full sm:w-auto"
                         disabled={isTransforming || NewTransformation === null}
                         onClick={onTransformHandler}
                     >
@@ -294,7 +294,7 @@ const TransformationForm = ({ action, data = null, type, creditBalance, userId, 
                     </Button>
                     <Button
                         type="submit"
-                        className="submit-button capitalize"
+                        className="submit-button capitalize w-full sm:w-auto"
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? 'Submitting...' : 'Save Image'}

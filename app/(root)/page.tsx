@@ -14,33 +14,31 @@ export default async function HomePage({ searchParams }: SearchParamProps) {
   const totalPages = images?.totalPage || 1;
   
   return (
-    <div className="min-h-screen w-screen bg-white overflow-x-hidden">
-      <div className="w-full max-w-[100vw] mx-auto">
-        <div className="flex">
+    <div className="min-h-screen w-full bg-white overflow-x-hidden">
+      <div className="w-full mx-auto max-w-full">
+        <div className="flex w-full">
           {/* Sidebar - Hidden on mobile, fixed on larger screens */}
-          <div className="hidden md:block">
+          <div className="hidden md:block shrink-0">
             <Sidebar />
           </div>
           
-          {/* Main Content */}
-          <div className="w-full md:pl-20">
-            <div className="w-full">
-              <Hero />
-              <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
-                <div className="w-full max-w-7xl mx-auto">
-                  <Suspense fallback={
-                    <div className="flex items-center justify-center py-12">
-                      <div className="text-gray-600 dark:text-gray-300">Loading...</div>
-                    </div>
-                  }>
-                    <CollectionDisplay 
-                      hasSearch={true}
-                      initialImages={imageData}
-                      initialTotalPages={totalPages}
-                      initialPage={page}
-                    />
-                  </Suspense>
-                </div>
+          {/* Main Content - Centered with auto margins when sidebar is hidden */}
+          <div className="flex-1 min-w-0 w-full md:pl-20 mx-auto max-w-full overflow-x-hidden">
+            <Hero />
+            <div className="w-full px-4 sm:px-6 lg:px-8 py-8 mx-auto max-w-full">
+              <div className="w-full max-w-7xl mx-auto">
+                <Suspense fallback={
+                  <div className="flex items-center justify-center py-12">
+                    <div className="text-gray-600 dark:text-gray-300">Loading...</div>
+                  </div>
+                }>
+                  <CollectionDisplay 
+                    hasSearch={true}
+                    initialImages={imageData}
+                    initialTotalPages={totalPages}
+                    initialPage={page}
+                  />
+                </Suspense>
               </div>
             </div>
           </div>

@@ -76,12 +76,12 @@ export const CollectionDisplay = ({
   };
 
   return (
-    <section className="container flex flex-col justify-center items-center mx-auto px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mb-12 text-center">
-        <h2 className="text-6xl font-extrabold text-gray-900 dark:text-white sm:text-4xl">
+    <section className="w-full max-w-full flex flex-col justify-center items-center mx-auto px-4 py-12 sm:px-6 lg:px-8 overflow-x-hidden">
+      <div className="mb-8 sm:mb-10 md:mb-12 text-center w-full max-w-full">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white break-words">
           Recent Edits
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-gray-300">
+        <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base text-gray-600 dark:text-gray-300 px-2">
           Browse through your recent image transformations and edits
         </p>
       </div>

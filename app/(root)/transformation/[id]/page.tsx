@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import Header from "@/app/components/shared/header";
+import Sidebar from "@/app/components/shared/sidebar";
 import TransformedImage from "@/app/components/shared/TransformedImage";
 import { Button } from "@/app/components/ui/button";
 import { getImageById } from "@/lib/actions/image.actions";
@@ -17,17 +18,24 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
 
   return (
     <>
-      <Header title={image.title} />
+      <div className="min-h-screen w-full bg-white overflow-x-hidden">
+        <div className="w-full mx-auto max-w-full">
+          <div className="flex w-full">
+            <div className="hidden md:block shrink-0">
+              <Sidebar />
+            </div>
+            <div className="flex-1 min-w-0 w-full md:pl-20 mx-auto max-w-full overflow-x-hidden">
+              <Header title={image.title} />
 
-      <main className="w-full max-w-full mx-auto px-4 sm:px-6 py-6 sm:py-10 bg-white rounded-lg shadow-sm sm:shadow-md overflow-x-hidden mt-10">
+              <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 bg-white rounded-lg shadow-sm sm:shadow-md mt-6 sm:mt-8 md:mt-10">
 
         {/* META SECTION */}
-        <section className="flex flex-col gap-4 rounded-2xl bg-white/60 p-4 sm:p-6 shadow-md sm:shadow-lg shadow-purple-100 backdrop-blur-sm sm:backdrop-blur-md md:flex-row md:items-center md:justify-between mx-auto w-full">
+        <section className="flex flex-col gap-4 rounded-2xl bg-white/60 p-4 sm:p-6 shadow-md sm:shadow-lg shadow-purple-100 backdrop-blur-sm sm:backdrop-blur-md md:flex-row md:items-center md:justify-between mx-auto w-full max-w-full">
           <div className="space-y-1 text-center md:text-left">
-            <p className="text-xl uppercase tracking-widest text-gray-400">
+            <p className="text-base sm:text-lg md:text-xl uppercase tracking-widest text-gray-400">
               Transformation
             </p>
-            <p className="text-xl font-bold capitalize text-purple-600">
+            <p className="text-base sm:text-lg md:text-xl font-bold capitalize text-purple-600">
               {image.transformationType}
             </p>
           </div>
@@ -54,15 +62,15 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
         </section>
 
         {/* IMAGE COMPARISON */}
-        <section className="mt-6 rounded-2xl sm:rounded-3xl border border-purple-100 sm:border-purple-200 bg-white/70 p-4 sm:p-6 shadow-sm sm:shadow-lg shadow-purple-50 sm:shadow-purple-100 backdrop-blur-sm sm:backdrop-blur-xl mx-auto w-full">
-          <div className="grid grid-cols-1 gap-6 sm:gap-8 md:gap-10 md:grid-cols-2">
+        <section className="mt-6 rounded-2xl sm:rounded-3xl border border-purple-100 sm:border-purple-200 bg-white/70 p-4 sm:p-6 shadow-sm sm:shadow-lg shadow-purple-50 sm:shadow-purple-100 backdrop-blur-sm sm:backdrop-blur-xl mx-auto w-full max-w-full">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8 lg:gap-10 md:grid-cols-2">
 
             {/* ORIGINAL IMAGE */}
-            <div className="space-y-3">
-              <div className="group flex flex-col gap-3 sm:gap-4 relative overflow-hidden rounded-xl sm:rounded-2xl border border-purple-100 sm:border-purple-200 bg-purple-50/60 p-3 sm:p-4 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg mx-auto w-full">
+            <div className="space-y-3 w-full">
+              <div className="group flex flex-col gap-3 sm:gap-4 relative overflow-hidden rounded-xl sm:rounded-2xl border border-purple-100 sm:border-purple-200 bg-purple-50/60 p-3 sm:p-4 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg mx-auto w-full max-w-full">
                 <div className='flex-between'>
 
-                  <h3 className="text-lg sm:text-3xl font-bold text-black sm:ml-3">
+                  <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-black sm:ml-3">
                     Original
                   </h3>
                   <div>
@@ -76,16 +84,15 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
                   alt="Original Image"
                   width={getImageSize(image.transformationType, image, "width")}
                   height={getImageSize(image.transformationType, image, "height")}
-                  className="h-full min-h-60 sm:min-h-72 w-full rounded-lg sm:rounded-xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                  className="h-full min-h-48 sm:min-h-60 md:min-h-72 w-full rounded-lg sm:rounded-xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </div>
             </div>
 
             {/* TRANSFORMED IMAGE */}
-            <div className="space-y-3">
-
-
-              <div className="relative overflow-hidden rounded-xl sm:rounded-2xl border border-purple-100 sm:border-purple-200 bg-purple-50/70 p-3 sm:p-4 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg mx-auto w-full">
+            <div className="space-y-3 w-full">
+              <div className="relative overflow-hidden rounded-xl sm:rounded-2xl border border-purple-100 sm:border-purple-200 bg-purple-50/70 p-3 sm:p-4 shadow-inner transition-all duration-300 hover:-translate-y-1 hover:shadow-lg mx-auto w-full max-w-full">
                 <TransformedImage
                   image={image}
                   type={image.transformationType}
@@ -100,17 +107,17 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
 
           {/* ACTIONS */}
           {userId === image.author.clerkId && (
-            <div className="mt-8 sm:mt-10 flex flex-col gap-4 border-t border-gray-100 sm:border-gray-200 pt-4 sm:pt-6 md:flex-row md:items-center md:justify-between mx-auto w-full">
+            <div className="mt-6 sm:mt-8 md:mt-10 flex flex-col gap-4 border-t border-gray-100 sm:border-gray-200 pt-4 sm:pt-6 md:flex-row md:items-center md:justify-between mx-auto w-full max-w-full">
               <p className="text-xs sm:text-sm text-gray-500 text-center md:text-left">
                 You can update or delete this transformation from your library.
               </p>
 
-              <div className="flex w-full flex-col gap-4 md:w-auto md:flex-row">
+              <div className="flex w-full flex-col gap-3 sm:gap-4 md:w-auto md:flex-row">
 
                 {/* UPDATE BUTTON */}
                 <button
                   type="button"
-                  className="gradient-btn w-full px-4 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-bold md:w-auto"
+                  className="gradient-btn w-full px-4 sm:px-6 py-2.5 sm:py-3 md:py-4 text-xs sm:text-sm font-bold md:w-auto"
                 >
                   <Link href={`/transformation/${image._id}/update`}>
                     Update Image
@@ -125,7 +132,11 @@ const ImageDetails = async ({ params }: SearchParamProps) => {
             </div>
           )}
         </section>
-      </main>
+              </main>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* EXTRA GLOBAL STYLES FOR CHIPS + BUTTONS */}
       <style>{`
