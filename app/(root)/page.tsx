@@ -2,6 +2,7 @@ import React, { Suspense } from 'react'
 import Sidebar from '../components/shared/sidebar'
 import Hero from '../components/shared/hero'
 import {CollectionDisplay} from '../components/shared/CollecionDisplay'
+import Footer from '../components/shared/footer'
 import { getAllImages } from "@/lib/actions/image.actions"
 
 export default async function HomePage({ searchParams }: SearchParamProps) {
@@ -43,6 +44,7 @@ export default async function HomePage({ searchParams }: SearchParamProps) {
                 </Suspense>
               </div>
             </div>
+            <Footer />
           </div>
         </div>
       </div>

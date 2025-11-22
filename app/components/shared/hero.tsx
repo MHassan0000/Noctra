@@ -13,7 +13,7 @@ export default function Hero() {
           <div className="flex flex-col items-center gap-4 sm:gap-5 md:gap-6 w-full">
             {/* Headings */}
             <div className="text-center space-y-2 sm:space-y-3 w-full px-1">
-              <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold leading-tight w-full px-2">
+              <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-bold leading-tight w-full px-2">
                 <span className="block">Bring Your Images to Life</span>
                 <span className="bg-linear-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent">
                   with Noctra AI
@@ -28,16 +28,16 @@ export default function Hero() {
             </div>
 
             {/* CTA */}
-            <div className="flex flex-col xs:flex-row flex-wrap justify-center items-center gap-3 w-full max-w-md mx-auto px-2">
+            <div className="flex flex-col xs:flex-row flex-wrap justify-center items-center gap-3 w-full max-w-xl mx-auto px-2">
               <Button
-                className="bg-linear-to-r from-purple-600 to-indigo-600 text-white px-5 py-2 rounded-full text-sm sm:text-base shadow hover:shadow-md transition-all w-auto min-w-[120px] text-center"
+                className="bg-linear-to-r from-purple-600 to-indigo-600 text-white px-7 py-4 rounded-full text-sm sm:text-base shadow hover:shadow-md transition-all w-auto min-w-[120px] text-center"
               >
                 <Link href="/sign-in">Get Started</Link>
               </Button>
               <Button
 
                 variant="outline"
-                className="px-5 py-2 rounded-full border-gray-200 hover:bg-gray-50 w-auto min-w-[120px] text-center text-sm sm:text-base"
+                className="px-7 py-4 rounded-full border-gray-200 hover:bg-gray-200 w-auto min-w-[120px] text-center text-sm sm:text-base"
 
               >
                 <Link href="/about">Learn More</Link>
