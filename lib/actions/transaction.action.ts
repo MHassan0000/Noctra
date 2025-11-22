@@ -5,7 +5,7 @@ import Stripe from "stripe";
 import { handleError } from '../utils';
 import { connectToDatabase } from '../database/mongoose';
 import Transaction from '../database/models/transaction.model';
-import { updateCredits } from './user.actions';
+import { updateCredits, getUserById } from './user.actions';
 
 export async function checkoutCredits(transaction: CheckoutTransactionParams) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -42,15 +42,39 @@ export async function createTransaction(transaction: CreateTransactionParams) {
   try {
     await connectToDatabase();
 
-    // Create a new transaction with a buyerId
-    const newTransaction = await Transaction.create({
-      ...transaction, buyer: transaction.buyerId
-    })
+    // Find user by Clerk ID to get MongoDB _id
+    const user = await getUserById(transaction.buyerId);
 
-    await updateCredits(transaction.buyerId, transaction.credits);
+    if (!user || !user._id) {
+      throw new Error(`User not found for buyerId: ${transaction.buyerId}`);
+    }
+
+    // Check if transaction already exists (idempotency)
+    const existingTransaction = await Transaction.findOne({
+      stripeId: transaction.stripeId,
+    });
+
+    if (existingTransaction) {
+      console.log(`Transaction ${transaction.stripeId} already exists`);
+      return JSON.parse(JSON.stringify(existingTransaction));
+    }
+
+    // Create a new transaction with MongoDB user _id
+    const newTransaction = await Transaction.create({
+      stripeId: transaction.stripeId,
+      amount: transaction.amount,
+      plan: transaction.plan,
+      credits: transaction.credits,
+      buyer: user._id,
+      createdAt: transaction.createdAt,
+    });
+
+    // Update user credits using MongoDB _id
+    await updateCredits(user._id, transaction.credits);
 
     return JSON.parse(JSON.stringify(newTransaction));
   } catch (error) {
-    handleError(error)
+    console.error("Error in createTransaction:", error);
+    handleError(error);
   }
 }
