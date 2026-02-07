@@ -52,17 +52,17 @@ export const Search = () => {
     timeoutRef.current = setTimeout(() => {
       const currentSearchParams = searchParams.toString();
       const currentUrlQuery = searchParams.get("query") || "";
-      
+
       // Only update URL if query actually changed
       if (newQuery !== currentUrlQuery) {
         isInternalUpdateRef.current = true;
-        
+
         if (newQuery.trim()) {
           // Create new params without page to reset to page 1 when searching
           const params = new URLSearchParams(currentSearchParams);
           params.delete('page');
           params.set('query', newQuery.trim());
-          
+
           const newUrl = `${window.location.pathname}?${params.toString()}`;
           // Use push to trigger server component re-render
           router.push(newUrl, { scroll: false });
@@ -90,7 +90,7 @@ export const Search = () => {
   return (
     <div className="flex w-full max-w-2xl rounded-2xl border-2 border-purple-200/20 bg-white px-3 sm:px-4 shadow-sm shadow-purple-200/15">
       <Image
-        src="/icons/search.svg"
+        src="/icons/search-v2.svg"
         alt="search"
         width={20}
         height={20}

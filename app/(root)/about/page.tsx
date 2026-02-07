@@ -53,7 +53,7 @@ export default function AboutPage() {
 
         <div className="flex justify-center">
           <Image
-            src="/images/logo.svg"
+            src="/images/logo-v2.svg"
             alt="AI Editing"
             width={500}
             height={500}
