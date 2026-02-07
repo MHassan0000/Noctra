@@ -19,5 +19,5 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   // Only run middleware for application routes; skip Next internals and static files
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|robots.txt|sw.js).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|robots.txt|sw.js|.*\\.svg$|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.webp$|.*\\.ico$).*)"],
 };

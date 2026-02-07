@@ -1,19 +1,20 @@
 import React, { Suspense } from 'react'
 import Sidebar from '../components/shared/sidebar'
 import Hero from '../components/shared/hero'
-import {CollectionDisplay} from '../components/shared/CollecionDisplay'
+import { CollectionDisplay } from '../components/shared/CollecionDisplay'
 import Footer from '../components/shared/footer'
 import { getAllImages } from "@/lib/actions/image.actions"
 
 export default async function HomePage({ searchParams }: SearchParamProps) {
-  const page = Number(searchParams?.page) || 1;
-  const searchQuery = (searchParams?.query as string) || '';
-  const images = await getAllImages({ page, searchQuery});
-  
+  const resolvedSearchParams = await searchParams;
+  const page = Number(resolvedSearchParams?.page) || 1;
+  const searchQuery = (resolvedSearchParams?.query as string) || '';
+  const images = await getAllImages({ page, searchQuery });
+
   // Ensure we always have valid data
   const imageData = images?.data || [];
   const totalPages = images?.totalPage || 1;
-  
+
   return (
     <div className="min-h-screen w-full bg-white overflow-x-hidden" style={{ overflowX: 'hidden' }}>
       <div className="w-full mx-auto max-w-full overflow-x-hidden">
@@ -22,7 +23,7 @@ export default async function HomePage({ searchParams }: SearchParamProps) {
           <div className="hidden md:block shrink-0">
             <Sidebar />
           </div>
-          
+
           {/* Main Content - Centered with auto margins when sidebar is hidden */}
           <div className="flex-1 min-w-0 w-full md:pl-20 mx-auto max-w-full overflow-x-hidden" style={{ overflowX: 'hidden', maxWidth: '100%' }}>
             <div className="w-full overflow-x-hidden" style={{ overflowX: 'hidden', width: '100%' }}>
@@ -35,7 +36,7 @@ export default async function HomePage({ searchParams }: SearchParamProps) {
                     <div className="text-gray-600 dark:text-gray-300">Loading...</div>
                   </div>
                 }>
-                  <CollectionDisplay 
+                  <CollectionDisplay
                     hasSearch={true}
                     initialImages={imageData}
                     initialTotalPages={totalPages}

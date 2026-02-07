@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import {
   ClerkProvider
 } from '@clerk/nextjs'
-import { Geist, Geist_Mono,Poppins } from "next/font/google";
+import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "./components/ui/toaster"
 
@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 const poppins = Poppins({
-  weight: ["400","500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
   subsets: ["latin"],
 });
@@ -33,15 +33,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-    <html lang="en">
-      <body
-        className={`${poppins.variable} antialiased`}
-      >
-        {children}
-        <Toaster />
-      </body>
-    </html>
+    <ClerkProvider signInFallbackRedirectUrl="/" signUpFallbackRedirectUrl="/">
+      <html lang="en">
+        <body
+          className={`${poppins.variable} antialiased`}
+        >
+          {children}
+          <Toaster />
+        </body>
+      </html>
     </ClerkProvider>
   );
 }
